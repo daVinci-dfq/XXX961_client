@@ -1,0 +1,48 @@
+// 定义项目中其他ts文件的编译规则。
+
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "exclude": ["src/**/__tests__/*"],
+  "compilerOptions": {
+    // 编译生成的目标版本的代码，ESNest代表生成ES6之后的语法。
+    "target": "ESNext",
+    // 生成代码时使用的模块化方案。
+    "module": "ESNext",
+    // 打开所有的严格模式检查。
+    "strict": true,
+    // jsx的处理方式（保留原有的jsx格式）。
+    "jsx": "preserve",
+    // 是否帮助导入一些需要的功能模块。
+    "importHelpers": true,
+    // 按照node的模块解析规则。
+    "moduleResolution": "Node",
+    // 跳过对整个库进行类似检测，而仅检测你用到的类型。
+    "skipDefaultLibCheck": true,
+    // 支持es module和commonjs混合使用。
+    "esModuleInterop": true,
+    // 允许合成默认模块导出。
+    "allowSyntheticDefaultImports": true,
+    // 文件名强制使用一致的大小写。
+    "forceConsistentCasingInFileNames": true,
+    // 支持类字段使用Define定义。
+    "useDefineForClassFields": true,
+    // 是否要生成sourcemap文件。
+    "sourceMap": true,
+
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    
+    // 文件路径在解析时的基本url。
+    "baseUrl": ".",
+    // 制定具体要解析使用的类型。
+    "types": ["webpack-env"],
+    // 路径的映射设置，类似于webpack alias。
+    "paths": {
+      "@/*": ["./src/*"],
+      "components/*": ["src/components/*"]
+    },
+    // 指定需要用到的库，也可以不配置，直接根据target来获取。
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"]
+  }
+}
