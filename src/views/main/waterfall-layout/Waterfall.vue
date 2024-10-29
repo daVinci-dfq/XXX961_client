@@ -18,10 +18,49 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { CSSProperties, computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from "vue";
-import {debounce,refThrottle} from"src/service/tool";
-import
+import {debounce,rafThrottle} from "./tool";
+import { IVirtualWaterFallProps, ICardItem, IBookColumnQueue, IBookRenderItem, IBookItemRect } from "./type";
+const props=defineProps<IVirtualWaterFallProps>();
+defineSlots<{
+  item(props:{item:ICardItem;imageHeight:number}):any;
+}>();
+const containerRef = ref<HTMLDivElement|null>(null);
+
+const resizeObserver = new ResizeObserver(()=>{
+  handleResize();
+});
+
+const dataState = reactive({
+  loading:false,
+  isFinish:false,
+  currentPage:1,
+  list:[] as ICardItem[],
+});
+
+const scrollState = reactive({
+  viewWidth:0,
+  viewHeight:0,
+  start:0,
+});
+
+const queueState = reactive({
+  queue:new Array(props.column).fill(0).map<IBookColumnQueue>(()=>({list:[],height:0})),
+  len:0,
+})
+
+const hasMoreData = computed(()=> queueState.len<dataState.list.length);
+
+const temporaryList = ref<IBookRenderItem[]>([]);
+
+const isShow = ref(false);
+
+const itemSizeInfo = ref(new Map<ICardItem["id"],IBookItemRect>());
+
+const end = computed(()=>scrollState.viewHeight+scrollState.start);
+
+const cardList = computed(()=>queueState.queue.reduce<IBookRenderItem[]>((pre,{list})=>pre.concat(list),[]));
 </script>
 
 <style scoped lang="scss">
