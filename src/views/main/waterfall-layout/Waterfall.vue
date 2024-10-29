@@ -11,7 +11,7 @@
          <slot name="item" :item="item" :imageHeight="imageHeight"></slot>
       </div>
       <div id="temporary-list" v-else>
-        <div v-for="{item,imageHeight,style} in temporaryList" :style="style">
+        <div v-for="{item,imageHeight,style} in temporaryList" :key="item.id" :style="style">
           <slot name="item" :item="item" :imageHeight="imageHeight"></slot>
         </div>
       </div>
@@ -61,7 +61,7 @@ const itemSizeInfo = ref(new Map<ICardItem["id"],IBookItemRect>());
 const end = computed(()=>scrollState.viewHeight+scrollState.start);
 
 const cardList = computed(()=>queueState.queue.reduce<IBookRenderItem[]>((pre,{list})=>pre.concat(list),[]));
-  const renderList = computed(() => cardList.value.filter((i) => i.h + i.y > scrollState.start && i.y < end.value));
+const renderList = computed(() => cardList.value.filter((i) => i.h + i.y > scrollState.start && i.y < end.value));
 
 const computedHeight = computed(() => {
   let minIndex = 0,
