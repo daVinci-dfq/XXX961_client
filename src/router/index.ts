@@ -1,9 +1,10 @@
-<<<<<<< HEAD
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-=======
-import { createRouter, createWebHistory, RouterLink, type RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  RouterLink,
+  type RouteRecordRaw
+} from 'vue-router'
 import { isUserLoggedIn } from '@/auth/auth'
->>>>>>> zzh
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,12 +20,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'login',
     component: () => import('@/views/login/LoginDialog.vue'), // 懒加载页面。
     meta: {
-<<<<<<< HEAD
-      info: 'Login!'
-=======
       info: 'Login!',
-      requiresAuth:false
->>>>>>> zzh
+      requiresAuth: false
     }
   },
 
@@ -57,26 +54,26 @@ const router = createRouter({
   history: createWebHistory(), // 使用history路由。
   routes
 })
-<<<<<<< HEAD
-
-export default router
-=======
 export default router
 
 //前置路由守卫
-router.beforeEach((to,from,next)=>{
-    if(to.matched.some(record=>record.meta.requiresAuth)){
-      if(!isUserLoggedIn()){
-        next('/login');
+router.beforeEach(
+  (
+    to: { matched: any[] },
+    from: any,
+    next: (arg0: string | undefined) => void
+  ) => {
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if (!isUserLoggedIn()) {
+        next('/login')
+      } else {
+        next()
       }
-      else{
-        next();
-      }
+    } else {
+      next()
     }
-    else{
-      next();
-    }
-});
+  }
+)
 
 //后置守卫
 //reouter.afterEach((to,from)=>{})
@@ -90,7 +87,7 @@ router.beforeEach((to,from,next)=>{
 //动态路由传参：
 //routes:[{
 //       path:'/search/:参数名',
-//       component:Search  
+//       component:Search
 //       }
 //]
 //编程式导航(带参数）：
@@ -103,4 +100,3 @@ router.beforeEach((to,from,next)=>{
 //
 //
 //})
->>>>>>> zzh
