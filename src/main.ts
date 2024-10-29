@@ -1,5 +1,9 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia' // 引入Pinia。
+<<<<<<< HEAD
+=======
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+>>>>>>> zzh
 
 import App from './App.vue' // 导入根组件（也称App组件）。
 import router from './router' // 路由。
@@ -9,15 +13,30 @@ import 'normalize.css'
 import './assets/css/index.less'
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue' // 引入Element图标库。
+<<<<<<< HEAD
 
 const app = createApp(App)
 
+=======
+//创建应用实例对象
+const app = createApp(App)
+//pinia使用:
+//import useCounterStore from "///"
+//import {storeToRef} from "pinia"
+//const store = useCounterStore()
+//const {name,doubleCount} = storeToRef(store) //对数据进行解构要用storeToRef()
+//const {increment} = store//对方法进行解析不需要
+>>>>>>> zzh
 // 图标。
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
+<<<<<<< HEAD
 app.use(createPinia())
+=======
+app.use(createPinia().use(piniaPluginPersistedstate))//pinia安装以及持久化配置
+>>>>>>> zzh
 app.use(router) // 安装路由插件。
 // app.use(axios)
 

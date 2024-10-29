@@ -7,6 +7,7 @@
             <p>XXX961</p>
           </template>
           <template #center>
+<<<<<<< HEAD
             <el-input
               v-model="search_input"
               class="input"
@@ -15,6 +16,20 @@
               clearable
             />
             <el-button style="height: 40px">search</el-button>
+=======
+            <div class="vertical-flex">
+              <div class="search-icon">
+              <el-input
+                  v-model="search_input"
+                  class="input"
+                  placeholder="Type here to search!"
+                  :prefix-icon="Search"
+                  clearable
+              />
+              <el-button style="height: 40px; margin-top: 16px">search</el-button>
+              </div>
+          </div>
+>>>>>>> zzh
           </template>
           <template #right>
             <el-button link @click="loginDialogVisible = true">Login</el-button>
@@ -26,7 +41,15 @@
         <el-aside class="aside">
           <side-nav></side-nav>
         </el-aside>
+<<<<<<< HEAD
         <el-main><RouterView /></el-main>
+=======
+        <el-main>
+          <RouterView />
+          <classifications/>
+          <waterfall/>
+        </el-main>
+>>>>>>> zzh
       </el-container>
     </el-container>
 
@@ -37,8 +60,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
+<<<<<<< HEAD
 import SideNav from './cpns/SideNav.vue'
 import LoginDialog from '../login/LoginDialog.vue'
+=======
+import  SideNav  from './cpns/SideNav.vue'
+import LoginDialog from '../login/LoginDialog.vue'
+import Classifications from './classifications/Classifications.vue'
+import Waterfall from './waterfall-layout/Waterfall.vue'
+>>>>>>> zzh
 
 const search_input = ref('')
 const loginDialogVisible = ref(false)
@@ -68,10 +98,23 @@ p {
 }
 
 .input {
+<<<<<<< HEAD
   width: 38%;
   height: 40px;
 }
 
+=======
+  margin-top: 16px;
+  width: 300px;
+  height: 40px;
+}
+
+.search-icon{
+  display: flex;
+  place-items: center;
+}
+
+>>>>>>> zzh
 .el-container {
   height: calc(100vh - 72px);
 }
@@ -80,4 +123,11 @@ p {
   padding: 20px;
   width: 300px;
 }
+<<<<<<< HEAD
+=======
+.vertical-flex{
+  display: flex;
+  flex-direction: column;
+}
+>>>>>>> zzh
 </style>
