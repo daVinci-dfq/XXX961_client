@@ -57,23 +57,23 @@ const router = createRouter({
 export default router
 
 //前置路由守卫
-router.beforeEach(
-  (
-    to: { matched: any[] },
-    from: any,
-    next: (arg0: string | undefined) => void
-  ) => {
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (!isUserLoggedIn()) {
-        next('/login')
-      } else {
-        next()
-      }
-    } else {
-      next()
-    }
-  }
-)
+// router.beforeEach(
+//   (
+//     to: { matched: any[] },
+//     from: any,
+//     next: (arg0: string | undefined) => void
+//   ) => {
+//     if (to.matched.some((record) => record.meta.requiresAuth)) {
+//       if (!isUserLoggedIn()) {
+//         next('/login')
+//       } else {
+//         next()
+//       }
+//     } else {
+//       next()
+//     }
+//   }
+// )
 
 //后置守卫
 //reouter.afterEach((to,from)=>{})
