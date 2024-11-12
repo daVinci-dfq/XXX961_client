@@ -1,4 +1,7 @@
 <template>
+<<<<<<< HEAD
+  <div><h2>Not Found Page</h2></div>
+=======
   <div>
     <h1>404 Error Page #2</h1>
     <p class="zoom-area">该页面不存在，请返回主页</p>
@@ -11,6 +14,7 @@
       <router-link to="/main">返回主页</router-link>
     </div>
   </div>
+>>>>>>> zzh
 </template>
 
 <script lang="ts">
@@ -21,6 +25,8 @@ export default defineComponent({
   }
 })
 </script>
+<<<<<<< HEAD
+=======
 <style scoped>
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700');
 @import url('https://fonts.googleapis.com/css?family=Catamaran:400,800');
@@ -171,3 +177,4 @@ a.more-link {
   letter-spacing: 1px;
 }
 </style>
+>>>>>>> zzh

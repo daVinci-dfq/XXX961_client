@@ -10,7 +10,7 @@
         >
           <el-menu-item index="1">
             <el-icon><Compass /></el-icon>
-            <span>Explore</span>
+            <span @click="explore">Explore</span>
           </el-menu-item>
           <el-menu-item index="2">
             <el-icon><CirclePlus /></el-icon>
@@ -22,7 +22,7 @@
           </el-menu-item>
           <el-menu-item index="4">
             <el-icon><User /></el-icon>
-            <span>Me</span>
+            <span @click="information">Me</span>
           </el-menu-item>
           <el-menu-item index="5">
             <el-icon><More /></el-icon>
@@ -36,11 +36,19 @@
 
 <script lang="ts" setup>
 import { Bell, CirclePlus, Compass, User } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
 const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
+}
+const information = () => {
+  router.push({ name: 'info' })
+}
+const explore = () => {
+  router.push({ name: 'main' })
 }
 </script>
 
