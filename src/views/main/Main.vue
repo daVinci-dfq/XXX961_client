@@ -35,7 +35,6 @@
         <el-main class="el-main">
           <RouterView />
           <classifications />
-
           <div class="container" ref="fContainerRef">
             <FsVirtualWaterfall
               :request="getData"
@@ -155,6 +154,7 @@ p {
   padding: 20px;
   width: 300px;
 }
+
 .vertical-flex {
   display: flex;
   flex-direction: column;

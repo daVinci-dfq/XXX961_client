@@ -32,7 +32,7 @@
 
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    
+
     // 文件路径在解析时的基本url。
     "baseUrl": ".",
     // 制定具体要解析使用的类型。

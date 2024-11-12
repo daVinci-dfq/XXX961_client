@@ -1,10 +1,10 @@
 function rafThrottle(fn: Function) {
   let lock = false
-  return function (this: any, ...args: any[]) {
+  return function (this: any) {
     if (lock) return
     lock = true
     window.requestAnimationFrame(() => {
-      fn.apply(this, args)
+      fn.apply(this.args)
       lock = false
     })
   }
@@ -19,5 +19,4 @@ function debounce(fn: Function, delay: number = 300) {
     }, delay)
   }
 }
-
-export { rafThrottle, debounce }
+export { debounce, rafThrottle }

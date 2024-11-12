@@ -15,12 +15,6 @@
       <component :is="login"></component>
     </div>
   </div>
-
-  <!-- 用户名：
-  <input type="number" v-model="number">
-  密码：
-  <input type="password" v-model="password">
-  <button @click="login()">登录</button> -->
 </template>
 
 <script></script>

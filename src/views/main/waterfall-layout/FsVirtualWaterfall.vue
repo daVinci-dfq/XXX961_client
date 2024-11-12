@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import {
-  CSSProperties,
+  type CSSProperties,
   computed,
   onMounted,
   onUnmounted,

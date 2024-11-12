@@ -1,4 +1,10 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  RouterLink,
+  type RouteRecordRaw
+} from 'vue-router'
+import { isUserLoggedIn } from '@/auth/auth'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,7 +20,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'login',
     component: () => import('@/views/login/LoginDialog.vue'), // 懒加载页面。
     meta: {
-      info: 'Login!'
+      info: 'Login!',
+      requiresAuth: false
     }
   },
 
@@ -54,3 +61,48 @@ const router = createRouter({
 })
 
 export default router
+
+//前置路由守卫
+// router.beforeEach(
+//   (
+//     to: { matched: any[] },
+//     from: any,
+//     next: (arg0: string | undefined) => void
+//   ) => {
+//     if (to.matched.some((record) => record.meta.requiresAuth)) {
+//       if (!isUserLoggedIn()) {
+//         next('/login')
+//       } else {
+//         next()
+//       }
+//     } else {
+//       next()
+//     }
+//   }
+// )
+
+//后置守卫
+//reouter.afterEach((to,from)=>{})
+//查询参数传参：
+// <router-link to="/xxx?key=value&key=value">xxx<Router-link>
+//组件内守卫：
+//beforeRouteEnter(to,from,next){}在进入组件时被调用
+//beforeRouteLeave(to,from,next){}在离开组件前被调用
+//接收参数
+//$router.query.key
+//动态路由传参：
+//routes:[{
+//       path:'/search/:参数名',
+//       component:Search
+//       }
+//]
+//编程式导航(带参数）：
+//this.$router.push({
+//      path:/xxx
+//      query:{
+//            参数名：this.xxx
+//            参数名：参数值
+//            }
+//
+//
+//})

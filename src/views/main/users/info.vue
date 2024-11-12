@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import HomeCard from '@/components/homeCard.vue'
@@ -416,4 +416,4 @@ onMounted(async () => {
 .fade-leave-active {
   animation: scale-up-center 0.5s linear both reverse;
 }
-</style>
+</style> -->
