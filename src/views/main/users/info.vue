@@ -1,19 +1,18 @@
 <!-- <script setup>
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import HomeCard from '@/components/homeCard.vue'
-import CardDetail from '@/components/cardDetail.vue'
-import { Back } from '@element-plus/icons-vue'
-import { doFocus, queryUserIndex, queryUserPost } from '@/apis/main'
-import { controlDetail } from '@/stores/controlDetail'
-import { onClickOutside } from '@vueuse/core'
-import {
-  resizeWaterFall,
-  waterFallInit,
-  waterFallMore
-} from '@/utils/waterFall'
-import { useUserStore } from '@/stores/user'
-import { ElMessage } from 'element-plus'
+// import CardDetail from '@/components/cardDetail.vue'
+// import { Back } from '@element-plus/icons-vue'
+// import { doFocus, queryUserIndex, queryUserPost } from '@/apis/main'
+// import { controlDetail } from '@/stores/controlDetail'
+// import { onClickOutside } from '@vueuse/core'
+// import {
+//   resizeWaterFall,
+//   waterFallInit,
+//   waterFallMore
+// } from '@/utils/waterFall'
+// import { useUserStore } from '@/stores/user'
+// import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const Details = controlDetail()

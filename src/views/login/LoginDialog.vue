@@ -5,9 +5,9 @@
         class="pinkbox"
         :style="{ transform: isSignIn ? 'translateX(0%)' : 'translateX(80%)' }"
       >
-        <div v-if="!isSignIn" class="signup nodisplay">
+        <div v-if="!isSignIn" class="nodisplay">
           <h1>register</h1>
-          <form autocomplete="off">
+          <form autocomplete="off" rule="rules">
             <input
               type="text"
               placeholder="username"
@@ -35,7 +35,7 @@
         </div>
         <div v-if="isSignIn" class="signin">
           <h1>sign in</h1>
-          <form class="more-padding" autocomplete="off">
+          <form class="more-padding" autocomplete="off" rule="rules">
             <input
               type="text"
               placeholder="username"
@@ -87,6 +87,7 @@
 import { ref, defineProps, defineEmits, onMounted, watch } from 'vue'
 import { UserFilled, Iphone } from '@element-plus/icons-vue'
 import LoginAccount from './cpns/LoginAccount.vue'
+import { isEmail } from '@/utils/validate'
 const isKeepPassword = ref(true)
 const isSignIn = ref(true)
 const props = defineProps({
@@ -101,12 +102,12 @@ const rememberMe = ref(false)
 const username = ref('')
 const password = ref('')
 
-// watch(
-//   () => props.modelValue,
-//   (newVal) => {
-//     visible.value = newVal
-//   }
-// )
+watch(
+  () => props.loginDialogVisible,
+  (newValue: boolean) => {
+    visible.value = newValue
+  }
+)
 
 const registerForm = ref({
   username: '',
@@ -146,12 +147,24 @@ const handleBeforeClose = (done: () => void) => {
   done()
 }
 
+// const checkEamilFrom = (email: string) => {
+//   if (!isEmail(email)) {
+//     return callback
+//   }
+//   callback
+// }
+const rules = {
+  username: [{ required: true, message: '用户名不能为空！', trigger: 'blur' }],
+  email: [{ required: true, message: '邮箱不能为空！', trigger: 'blur' }]
+}
+
 const clickOutside = (event: MouseEvent) => {
   if (popupRef.value && !popupRef.value.contains(event.target as Node)) {
     visible.value = false
     emit('update:modelValue', false)
   }
 }
+
 // onMounted(() =>{
 
 // })
@@ -173,10 +186,11 @@ body {
 
 .welcome {
   background: #f6f6f6;
-  width: 650px;
+  width: 100%;
   height: 415px;
   position: absolute;
   top: 25%;
+  left: 0%;
   border-radius: 5px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
 }
@@ -195,7 +209,6 @@ body {
 }
 
 .nodisplay {
-  display: none;
   transition: all 0.5s ease;
 }
 

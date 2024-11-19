@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/main/users/info',
+    path: '/info',
     name: 'info',
     component: () => import('@/views/main/users/info.vue')
   },
@@ -52,6 +52,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       info: 'Page not found!'
     }
+  },
+  {
+    path: '/text',
+    name: 'text',
+    component: () => import('@/views/main/cpns/text.vue')
   }
 ]
 
