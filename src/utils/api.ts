@@ -1,13 +1,12 @@
 import http from '@/utils/http'
+import axios from 'axios'
 
 // 登录
 export const login = ({
   username,
-  email,
   password
 }: {
-  username:string
-  email: string
+  username: string
   password: string
 }) => {
   return http({
@@ -17,13 +16,29 @@ export const login = ({
       'Content-Type': 'application/json'
     },
     data: {
-      email,
+      username,
       password
     }
   })
 }
 
-// 注册
+/**
+ * 注册
+ *
+ */
+export const getEmail = {
+  async getEmailCode(data: {
+    email: string
+  }): Promise<{ code: number; message: string }> {
+    try {
+      const response = await axios.get('/code', { params: data })
+      return response.data
+    } catch (error) {
+      console.error('Error fetching email code:', error)
+      throw error
+    }
+  }
+}
 export const Register = ({
   email,
   username,
@@ -50,7 +65,7 @@ export const Register = ({
 // 访问用户主页
 export const queryUserIndex = ({ id }: { id: string }) => {
   return http({
-    url: '/index/',
+    url: '/info/',
     method: 'POST',
     data: {
       id
@@ -59,7 +74,7 @@ export const queryUserIndex = ({ id }: { id: string }) => {
 }
 
 // 上传帖子
-export const uploadPost = (data:any) => {
+export const uploadPost = (data: any) => {
   return http({
     url: '/upload/info/',
     method: 'POST',
@@ -79,7 +94,13 @@ export const postDetail = ({ id }: { id: number }) => {
 }
 
 // 主页帖子
-export const queryPost = ({ offset, query }:) => {
+export const queryPost = ({
+  offset,
+  query
+}: {
+  offset: number
+  query: string | string[]
+}) => {
   return http({
     url: '/post/',
     method: 'POST',
@@ -88,7 +109,7 @@ export const queryPost = ({ offset, query }:) => {
 }
 
 // 评论帖子
-export const doComment = ({ data }:{data:any}) => {
+export const doComment = ({ data }: { data: any }) => {
   return http({
     url: '/comment/',
     method: 'POST',
@@ -97,7 +118,7 @@ export const doComment = ({ data }:{data:any}) => {
 }
 
 // 用户关注
-export const doFocus = ({ id }:{id:number}) => {
+export const doFocus = ({ id }: { id: number }) => {
   return http({
     url: '/focus/',
     method: 'POST',
@@ -112,7 +133,7 @@ export const queryUserFocus = () => {
   })
 }
 
-export const unFollow = ({ id }:{id:number}) => {
+export const unFollow = ({ id }: { id: number }) => {
   return http({
     url: '/user/unfollow/',
     method: 'POST',
@@ -120,7 +141,13 @@ export const unFollow = ({ id }:{id:number}) => {
   })
 }
 
-export const updateUserInfo = ({ username, signature }:{username:string;signature:string}) => {
+export const updateUserInfo = ({
+  username,
+  signature
+}: {
+  username: string
+  signature: string
+}) => {
   return http({
     url: '/user/update/',
     method: 'POST',
@@ -131,79 +158,101 @@ export const updateUserInfo = ({ username, signature }:{username:string;signatur
   })
 }
 
-// export const queryUserPost = ({ user_id, types, offset }:{user_id:number;}) => {
-//   return http({
-//     url: '/user/post/',
-//     method: 'POST',
-//     data: {
-//       user_id,
-//       types,
-//       offset
-//     }
-//   })
-// }
+export const queryUserPost = ({
+  user_id,
+  types,
+  offset
+}: {
+  user_id: number
+  types: string
+  offset: number
+}) => {
+  return http({
+    url: '/user/post/',
+    method: 'POST',
+    data: {
+      user_id,
+      types,
+      offset
+    }
+  })
+}
 
-// export const controlUserCollectOrLike = ({ post_id, operator, type }) => {
-//   return http({
-//     url: '/post/control/',
-//     method: 'POST',
-//     data: {
-//       post_id,
-//       type,
-//       operator
-//     }
-//   })
-// }
+export const controlUserCollectOrLike = ({
+  post_id,
+  operator,
+  type
+}: {
+  post_id: number
+  operator: any
+  type: string
+}) => {
+  return http({
+    url: '/post/control/',
+    method: 'POST',
+    data: {
+      post_id,
+      type,
+      operator
+    }
+  })
+}
 
-// export const getComment = ({ id, offset }) => {
-//   return http({
-//     url: '/comment/main/',
-//     method: 'POST',
-//     data: {
-//       id,
-//       offset
-//     }
-//   })
-// }
+export const getComment = ({ id, offset }: { id: number; offset: number }) => {
+  return http({
+    url: '/comment/main/',
+    method: 'POST',
+    data: {
+      id,
+      offset
+    }
+  })
+}
 
-// export const queryUserPostControl = ({ offset, types }) => {
-//   return http({
-//     url: '/user/post/control/',
-//     method: 'POST',
-//     data: {
-//       offset,
-//       types
-//     }
-//   })
-// }
+export const queryUserPostControl = ({
+  offset,
+  types
+}: {
+  offset: number
+  types: string
+}) => {
+  return http({
+    url: '/user/post/control/',
+    method: 'POST',
+    data: {
+      offset,
+      types
+    }
+  })
+}
 
-// export const postDelete = ({ id }:{id:number}) => {
-//   return http({
-//     url: '/post/delete/',
-//     method: 'POST',
-//     data: {
-//       id
-//     }
-//   })
-// }
+export const postDelete = ({ id }: { id: number }) => {
+  return http({
+    url: '/post/delete/',
+    method: 'POST',
+    data: {
+      id
+    }
+  })
+}
 
-// export const removeFan = ({ id }) => {
-//   return http({
-//     url: '/user/remove/fan/',
-//     method: 'POST',
-//     data: {
-//       id
-//     }
-//   })
-// }
+export const removeFan = ({ id }: { id: number }) => {
+  return http({
+    url: '/user/remove/fan/',
+    method: 'POST',
+    data: {
+      id
+    }
+  })
+}
 
-// export const loadReplies = ({ id, offset }) => {
-//   return http({
-//     url: '/comment/reply/',
-//     method: 'POST',
-//     data: {
-//       id,
-//       offset
-//     }
-//   })
-// }
+export const loadReplies = ({ id, offset }: { id: number; offset: number }) => {
+  return http({
+    url: '/comment/reply/',
+    method: 'POST',
+    data: {
+      id,
+      offset
+    }
+  })
+}

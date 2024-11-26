@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>404 Error Page #2</h1>
+    <h1>404 Error Page</h1>
     <p class="zoom-area">该页面不存在，请返回主页</p>
     <section class="error-container">
       <span class="four"><span class="screen-reader-text">4</span></span>

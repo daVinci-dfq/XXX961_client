@@ -7,7 +7,12 @@
       >
         <div v-if="!isSignIn" class="nodisplay">
           <h1>register</h1>
-          <form autocomplete="off" rule="rules">
+          <form
+            :model="registerForm"
+            autocomplete="off"
+            :rules="registerRules"
+            ref="form"
+          >
             <input
               type="text"
               placeholder="username"
@@ -19,38 +24,61 @@
               v-model="registerForm.email"
             />
             <input
+              v-model="registerForm.code"
+              placeholder="emailVerificationCode"
+            />
+            <input
               type="password"
               placeholder="password"
               v-model="registerForm.password"
             />
-            <input
-              type="password"
-              placeholder="confirm password"
-              v-model="registerForm.confirmPassword"
-            />
-            <button class="button submit" @click="createAccount">
+            <div class="sendEmailCode">
+              <input
+                type="password"
+                placeholder="confirm password"
+                v-model="registerForm.confirmPassword"
+              />
+              <button
+                class="button submit"
+                @click="sendEmailCode"
+                :disabled="!disabled"
+              >
+                {{ isCountDown ? '获取验证码' : `请等待${count}秒重试` }}>
+              </button>
+            </div>
+            <button
+              class="button submit"
+              @click="register"
+              :disabled="!disabled"
+            >
               create account
             </button>
           </form>
         </div>
         <div v-if="isSignIn" class="signin">
           <h1>sign in</h1>
-          <form class="more-padding" autocomplete="off" rule="rules">
+          <form
+            :model="loginForm"
+            class="more-padding"
+            ref="loginFromRef"
+            autocomplete="off"
+            :rule="loginRules"
+          >
             <input
               type="text"
               placeholder="username"
-              v-model="signInForm.username"
+              v-model="loginForm.username"
             />
             <input
               type="password"
               placeholder="password"
-              v-model="signInForm.password"
+              v-model="loginForm.password"
             />
             <div class="checkbox">
               <input type="checkbox" id="remember" v-model="rememberMe" />
               <label for="remember">remember me</label>
             </div>
-            <button class="button submit" @click="login">login</button>
+            <button class="button submit" @click="submitFrom">login</button>
           </form>
         </div>
       </div>
@@ -84,10 +112,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, onMounted, watch } from 'vue'
-import { UserFilled, Iphone } from '@element-plus/icons-vue'
-import LoginAccount from './cpns/LoginAccount.vue'
+import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue'
 import { isEmail } from '@/utils/validate'
+import { login, Register, getEmail } from '@/utils/api'
 const isKeepPassword = ref(true)
 const isSignIn = ref(true)
 const props = defineProps({
@@ -99,8 +126,6 @@ const emit = defineEmits(['update:modelValue', 'confirm'])
 
 const visible = ref(props.loginDialogVisible)
 const rememberMe = ref(false)
-const username = ref('')
-const password = ref('')
 
 watch(
   () => props.loginDialogVisible,
@@ -108,18 +133,68 @@ watch(
     visible.value = newValue
   }
 )
-
+//注册
 const registerForm = ref({
   username: '',
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  code: ''
 })
 
-const signInForm = ref({
+const registerRules = {
+  username: [{ required: true, message: '用户名不能为空！', trigger: 'blur' }],
+  email: [{ required: true, message: '邮箱不能为空！', trigger: 'blur' }],
+  password: [{ required: true, message: '密码不能为空！', trigger: 'blur' }]
+}
+const disabled = computed(() => {
+  return (
+    registerForm.value.email &&
+    isEmail(registerForm.value.email) &&
+    isCountDown.value
+  )
+})
+
+const isCountDown = ref(true)
+const count = ref(60)
+const sendEmailCode = async () => {
+  isCountDown.value = false
+  countDown()
+  await getEmail.getEmailCode({ email: registerForm.value.email })
+}
+
+const countDown = () => {
+  if (count.value > 0) {
+    count.value--
+    setTimeout(() => {
+      countDown()
+    }, 1000)
+  } else {
+    isCountDown.value = true
+    count.value = 60
+  }
+}
+const form = ref(null as any)
+const register = async () => {
+  const res = await isEmail(registerForm.value.email)
+  if (!res) return
+  try {
+    await Register(registerForm.value)
+  } catch (error) {
+    console.log('格式不对')
+  }
+}
+//登录
+const loading = ref<boolean>(false)
+const loginRules = {
+  username: [{ required: true, message: '用户名不能为空！', trigger: 'blur' }],
+  password: [{ required: true, message: '密码不能为空！', trigger: 'blur' }]
+}
+const loginForm = ref({
   username: '',
   password: ''
 })
+const loginFromRef = ref(null as any)
 
 function toggleSignIn() {
   isSignIn.value = true
@@ -128,24 +203,34 @@ function toggleSignIn() {
 function toggleSignUp() {
   isSignIn.value = false
 }
-
-const cancel = () => {
-  visible.value = false
-  emit('update:modelValue', false)
+const submitFrom = async () => {
+  try {
+    loading.value = true
+    const res = await login({ ...form.value })
+    console.log('🚀 ~ submitForm ~ res:', res)
+  } catch (error) {
+    console.log('登陆失败')
+  } finally {
+    loading.value = false
+  }
 }
 
-const login = () => {
-  const data = { username: username.value, password: password.value }
-  emit('confirm', data)
-  visible.value = false
-  emit('update:modelValue', false)
-}
+// const cancel = () => {
+//   visible.value = false
+//   emit('update:modelValue', false)
+// }
+// const loginAccount = () => {
+//   const data = { username: username.value, password: password.value }
+//   emit('confirm', data)
+//   visible.value = false
+//   emit('update:modelValue', false)
+// }
 
-const handleBeforeClose = (done: () => void) => {
-  visible.value = false
-  emit('update:modelValue', false)
-  done()
-}
+// const handleBeforeClose = (done: () => void) => {
+//   visible.value = false
+//   emit('update:modelValue', false)
+//   done()
+// }
 
 // const checkEamilFrom = (email: string) => {
 //   if (!isEmail(email)) {
@@ -153,10 +238,6 @@ const handleBeforeClose = (done: () => void) => {
 //   }
 //   callback
 // }
-const rules = {
-  username: [{ required: true, message: '用户名不能为空！', trigger: 'blur' }],
-  email: [{ required: true, message: '邮箱不能为空！', trigger: 'blur' }]
-}
 
 const clickOutside = (event: MouseEvent) => {
   if (popupRef.value && !popupRef.value.contains(event.target as Node)) {
@@ -164,10 +245,6 @@ const clickOutside = (event: MouseEvent) => {
     emit('update:modelValue', false)
   }
 }
-
-// onMounted(() =>{
-
-// })
 </script>
 
 <style scoped>
@@ -393,5 +470,10 @@ input[type='checkbox'] {
 .checkbox input[type='checkbox']:checked· + ·label {
   color: #ce7d88;
   transition: 0.5s all ease;
+}
+.sendEmailCode {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 </style>
