@@ -34,19 +34,18 @@ export const useUserStore = defineStore('user', () => {
   }
   const getUserInfo = async ({
     username,
-    email,
     password
   }: {
     username: string
     email: string
     password: string
   }) => {
-    userInfo.value = await login({ email, password, username })
-    const focusResult = await queryUserFocus()
-    userFocus.value = focusResult.info.follow
-    userCollect.value = focusResult.info.collected
-    userFavorite.value = focusResult.info.favorites
-    headersObj.value = { Authorization: `Bearer ${userInfo.value.token}` }
+    userInfo.value = await login({ password, username })
+    // const focusResult = await queryUserFocus()
+    // // userFocus.value = focusResult.info.follow
+    // // userCollect.value = focusResult.info.collected
+    // // userFavorite.value = focusResult.info.favorites
+    // // headersObj.value = { Authorization: `Bearer ${userInfo.value.token}` }
   }
   const userLogout = async () => {
     userInfo.value = {}

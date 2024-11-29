@@ -3,7 +3,7 @@
     <div class="welcome">
       <div
         class="pinkbox"
-        :style="{ transform: isSignIn ? 'translateX(0%)' : 'translateX(80%)' }"
+        :style="{ transform: isSignIn ? 'translateX(0%)' : 'translateX(100%)' }"
       >
         <div v-if="!isSignIn" class="nodisplay">
           <h1>register</h1>
@@ -23,29 +23,29 @@
               placeholder="email"
               v-model="registerForm.email"
             />
-            <input
-              v-model="registerForm.code"
-              placeholder="emailVerificationCode"
-            />
-            <input
-              type="password"
-              placeholder="password"
-              v-model="registerForm.password"
-            />
             <div class="sendEmailCode">
               <input
-                type="password"
-                placeholder="confirm password"
-                v-model="registerForm.confirmPassword"
+                v-model="registerForm.code"
+                placeholder="verificationCode"
               />
               <button
                 class="button submit"
                 @click="sendEmailCode"
                 :disabled="!disabled"
               >
-                {{ isCountDown ? '获取验证码' : `请等待${count}秒重试` }}>
+                {{ isCountDown ? '获取验证码' : `请等待${count}秒重试` }}
               </button>
             </div>
+            <input
+              type="password"
+              placeholder="password"
+              v-model="registerForm.password"
+            />
+            <input
+              type="password"
+              placeholder="confirm password"
+              v-model="registerForm.confirmPassword"
+            />
             <button
               class="button submit"
               @click="register"
@@ -84,28 +84,17 @@
       </div>
       <div class="leftbox">
         <h2 class="title"><span>BLOOM</span>&<br />BOUQUET</h2>
-        <p class="desc">pick your perfect <span>bouquet</span></p>
-        <img
-          class="flower smaller"
-          src="https://image.ibb.co/d5X6pn/1357d638624297b.jpg"
-          alt="1357d638624297b"
-          border="0"
-        />
         <p class="account">have an account?</p>
         <button class="button" @click="toggleSignIn" id="signin">login</button>
+        <p class="desc">show your <span>beautiful</span></p>
       </div>
       <div class="rightbox">
         <h2 class="title"><span>BLOOM</span>&<br />BOUQUET</h2>
-        <p class="desc">pick your perfect <span>bouquet</span></p>
-        <img
-          class="flower"
-          src="https://preview.ibb.co/jvu2Un/0057c1c1bab51a0.jpg"
-          alt="0057c1c1bab51a0"
-        />
         <p class="account">don't have an account?</p>
         <button class="button" @click="toggleSignUp" id="signup">
-          sign up
+          register
         </button>
+        <p class="desc">show your <span>beautiful</span></p>
       </div>
     </div>
   </el-dialog>
@@ -317,7 +306,7 @@ h1 {
 .title {
   font-family: 'Lora', serif;
   color: #8e9aaf;
-  font-size: 1.8em;
+  font-size: 2.8em;
   line-height: 1.1em;
   letter-spacing: 3px;
   text-align: center;
@@ -326,12 +315,13 @@ h1 {
 }
 
 .desc {
-  margin-top: -8px;
+  font-size: 13px;
+  margin-top: 20%;
 }
 
 .account {
-  margin-top: 45%;
-  font-size: 10px;
+  margin-top: 17%;
+  font-size: 13px;
 }
 
 p {
@@ -382,7 +372,7 @@ button:hover {
 }
 
 .button {
-  margin-top: 3%;
+  margin-top: 5%;
   background: #f6f6f6;
   color: #ce7d88;
   border: solid 1px #eac7cc;
@@ -460,10 +450,14 @@ label {
   position: relative;
   left: -62px;
   top: 5px;
+  
+}
+.checkbox-custom {
+  transform: scale(1.5); /* 放大1.5倍 */
 }
 
 input[type='checkbox'] {
-  width: 7px;
+  width: 15px;
   background: #ce7d88;
 }
 
@@ -474,6 +468,10 @@ input[type='checkbox'] {
 .sendEmailCode {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 0px;
+}
+.sendEmailCode button {
+  width: 70px;
+  height: 50px;
 }
 </style>

@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 import { ChatRound, Edit } from '@element-plus/icons-vue'
 import { onMounted, ref } from 'vue'
 import {
@@ -511,4 +511,4 @@ onMounted(() => load())
   bottom: 1.5em;
   width: 500px;
 }
-</style> -->
+</style>

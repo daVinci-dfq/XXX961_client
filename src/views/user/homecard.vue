@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 import { ref } from 'vue'
 
 defineProps({
@@ -154,4 +154,4 @@ section {
   font-weight: 200;
   font-size: 0.5rem;
 }
-</style> -->
+</style>
