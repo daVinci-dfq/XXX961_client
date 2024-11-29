@@ -1,3 +1,4 @@
+// import { useUserStore } from '@/stores/user'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia' // 引入Pinia。
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
@@ -10,6 +11,7 @@ import './assets/css/index.less'
 
 //创建应用实例对象
 const app = createApp(App)
+// const pinia = createPinia()
 
 //pinia使用:
 //import useCounterStore from "///"
@@ -23,3 +25,4 @@ app.use(router) // 安装路由插件。
 // app.use(axios)
 
 app.mount('#app') // 将页面渲染到index.html文件中id="app"的元素上。
+// const userStore = useUserStore()

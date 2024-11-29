@@ -28,6 +28,10 @@
             <el-icon><More /></el-icon>
             <span>More</span>
           </el-menu-item>
+          <el-menu-item index="6">
+            <el-icon><More /></el-icon>
+            <span @click="text">text</span>
+          </el-menu-item>
         </el-menu>
       </el-col>
     </el-row>
@@ -46,6 +50,9 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 const information = () => {
   router.push({ name: 'info' })
+}
+const text = () => {
+  router.push({ name: 'text' })
 }
 const explore = () => {
   router.push({ name: 'main' })

@@ -2,14 +2,11 @@
 import { defineStore } from 'pinia'
 
 import {
-  getToken,
-  setToken,
-  removeToken,
   getStoreId,
   setStoreId,
   getUserInfo,
   removeUserInfo
-} from '~/utils/cookies'
+} from '@/utils/cookies'
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
 import { Message } from '@element-plus/icons-vue'
@@ -54,6 +51,24 @@ export const useUserStore = defineStore('user', () => {
   const userLogout = async () => {
     userInfo.value = {}
     return { info: '成功退出登录' }
+  }
+  const removeFocus = (type: number, id: number) => {
+    if (type === 1) {
+      const index = userFocus.value.indexOf(id)
+      if (index !== -1) {
+        userFocus.value.splice(index, 1)
+      }
+    } else if (type === 2) {
+      const index = userFavorite.value.indexOf(id)
+      if (index !== -1) {
+        userFavorite.value.splice(index, 1)
+      }
+    } else if (type === 3) {
+      const index = userCollect.value.indexOf(id)
+      if (index !== -1) {
+        userCollect.value.splice(index, 1)
+      }
+    }
   }
 
   const changeInfo = ({

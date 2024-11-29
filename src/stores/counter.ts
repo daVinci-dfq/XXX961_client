@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
-
-export const useCounterStore = defineStore('counter', {
-  state: () => {
-
-  }
-
-  return { count, doubleCount, increment }
-=======
 //该文件创建了vuex中的store
 import { ref, computed } from 'vue'
 import axios from 'axios'
@@ -39,5 +28,4 @@ export const useCounterStore = defineStore('counter', {
       }
     }
   }
->>>>>>> zzh
 })

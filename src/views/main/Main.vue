@@ -56,7 +56,10 @@
       </el-container>
     </el-container>
 
-    <LoginDialog v-model="loginDialogVisible" @confirm="login" />
+    <LoginDialog
+      v-model:loginDialogVisible="loginDialogVisible"
+      @confirm="login"
+    />
   </div>
 </template>
 
@@ -85,6 +88,9 @@ const fContainerObserver = new ResizeObserver((entries) => {
   changeColumn(entries[0].target.clientWidth)
 })
 
+const handleLoginDialogVisible = (newValue: boolean) => {
+  loginDialogVisible.value = newValue
+}
 const changeColumn = (width: number) => {
   if (width > 960) {
     column.value = 5

@@ -40,18 +40,23 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/main/users/info',
+    path: '/info',
     name: 'info',
     component: () => import('@/views/main/users/info.vue')
   },
 
   {
-    path: '/pathMatch(.*)*',
+    path: '/:pathMatch(.*)',
     name: 'notFound',
     component: () => import('@/views/not-found/NotFound.vue'),
     meta: {
       info: 'Page not found!'
     }
+  },
+  {
+    path: '/text',
+    name: 'text',
+    component: () => import('@/views/test/test.vue')
   }
 ]
 
