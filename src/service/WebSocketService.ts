@@ -17,68 +17,41 @@ export class WebSocketService {
 
   public connect() {
     return new Promise<void>((resolve, reject) => {
-      this.stompClient = Client {
-        brokerURL: this.socketEndpoint.value,
-        connectHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-        debug: (str: string) => {
-          console.log(str)
-        },
-        onConnect: (frame: any) => {
-          console.log("WbSocket Connected: ", frame);
-          this.isConnected.value = true;
-          messages.value.push({
-            sender: "Server",
-            content: "Websocket connected",
-            type: "tip",
-          });
-
-          this.stompClient.subscribe("/topic/notice", (res: any) => {
-            messages.value.push({
-              sender: "Server",
-              content: res.body,
-            });
-          });
-
-          this.stompClient.subscribe("/user/queue/greeting", (res: any) => {
-            const messageData = JSON.parse(res.body) as MessageType;
-            messages.value.push({
-              sender: messageData.sender,
-              content: messageData.content,
-            });
-          });
-        },
-        onStompError: (frame: any) => {
-          console.error("Broker reported error: " + frame.headers["message"]);
-          console.error("Additional details: " + frame.body);
-        },
-        onDisconnect: () => {
-          isConnected.value = false;
-          messages.value.push({
-            sender: "Server",
-            content: "Websocket disconnected",
-            type: "tip",
-          });
-        },
+      this.stompClient = Stomp.over(() => {
+        return new SockJS(this.socketEndpoint.value)
+      })
+      this.stompClient.brokerURL = this.socketEndpoint.value
+      this.stompClient.onConnect = (frame) => {
+        console.log('WebSocket STOMP Connected: ', frame)
+        this.isConnected.value = true
+        resolve()
       }
-      stompClient.activate();
-
+      this.stompClient.onWebSocketError = (error) => {
+        console.log('WebSocket Error: ', error)
+        reject(error)
+      }
+      this.stompClient.onStompError = (error) => {
+        console.log('STOMP Error: ', error)
+        reject(error)
+      }
+      this.stompClient.activate()
     })
   }
 
   public disconnect(): void {
     if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.disconnect(() => {
-        console.log('Disconnected')
-        this.isConnected = false
-      })
+      this.stompClient.deactivate()
+      this.isConnected.value = false
+      console.log('WebSocket STOMP Disconnected')
     }
   }
 
-  public sendMessage(destination: string, message: any): void {
+  public sendMessage(destination: string, message: object): void {
     if (this.stompClient && this.isConnected) {
-      this.stompClient.send(destination, {}, JSON.stringify(message))
+      this.stompClient.publish({
+        destination: destination,
+        body: JSON.stringify(message)
+      })
     }
   }
 

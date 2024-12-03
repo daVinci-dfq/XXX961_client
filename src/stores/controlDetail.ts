@@ -7,7 +7,7 @@ export const controlDetail = () => {
     commentCount: number
   }
 
-  const detail = ref<Detail>({ commentCount: 0 });
+  const detail = ref<Detail>({ commentCount: 0 })
 
   const comments = ref([])
   // 评论内容
