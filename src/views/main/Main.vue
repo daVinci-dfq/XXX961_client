@@ -1,86 +1,20 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>
-        <top-bar class="header">
-          <template #left>
-            <p>XXX961</p>
-          </template>
-          <template #center>
-            <div class="vertical-flex">
-              <div class="search-icon">
-                <el-input
-                  v-model="search_input"
-                  class="input"
-                  placeholder="Type here to search!"
-                  :prefix-icon="Search"
-                  clearable
-                />
-                <el-button style="height: 40px; margin-top: 16px"
-                  >search</el-button
-                >
-              </div>
-            </div>
-          </template>
-          <template #right>
-            <el-button link @click="loginDialogVisible = true">Login</el-button>
-            <el-button link>Exit</el-button>
-          </template>
-        </top-bar>
-      </el-header>
-      <el-container>
-        <el-aside class="aside">
-          <side-nav></side-nav>
-        </el-aside>
-        <el-main class="el-main">
-          <RouterView />
-          <classifications />
-          <div class="container" ref="fContainerRef">
-            <FsVirtualWaterfall
-              :request="getData"
-              :gap="15"
-              :page-size="20"
-              :column="column"
-            >
-              <template #item="{ item }">
-                <div
-                  class="test-item"
-                  :style="{
-                    background: item.bgColor
-                  }"
-                ></div>
-              </template>
-            </FsVirtualWaterfall>
-          </div>
-        </el-main>
-      </el-container>
+      <el-aside class="aside">
+        <p class="header">XXX961</p>
+        <side-nav></side-nav>
+      </el-aside>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
-
-    <LoginDialog
-      v-model:loginDialogVisible="loginDialogVisible"
-      @confirm="login"
-    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Search } from '@element-plus/icons-vue'
 import SideNav from './cpns/SideNav.vue'
-import LoginDialog from '../login/cpns/LoginDialog.vue'
-import Classifications from './cpns/Classifications.vue'
-import FsVirtualWaterfall from './waterfall-layout/FsVirtualWaterfall.vue'
-import type { ICardItem } from './waterfall-layout/type'
-import list from './waterfall-layout/config/index'
-
-const search_input = ref('')
-const loginDialogVisible = ref(false)
-
-const login = (loginData: { username: string; password: string }) => {
-  console.log('Username:', loginData.username)
-  console.log('Password:', loginData.password)
-}
-// 在这里处理登录逻辑
 
 const fContainerRef = ref<HTMLDivElement | null>(null)
 const column = ref(6)
@@ -88,9 +22,6 @@ const fContainerObserver = new ResizeObserver((entries) => {
   changeColumn(entries[0].target.clientWidth)
 })
 
-const handleLoginDialogVisible = (newValue: boolean) => {
-  loginDialogVisible.value = newValue
-}
 const changeColumn = (width: number) => {
   if (width > 960) {
     column.value = 5
@@ -110,26 +41,11 @@ onMounted(() => {
 onUnmounted(() => {
   fContainerRef.value && fContainerObserver.unobserve(fContainerRef.value)
 })
-
-const getData = (page: number, pageSize: number) => {
-  return new Promise<ICardItem[]>((resolve) => {
-    setTimeout(() => {
-      resolve(
-        list.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
-      )
-    }, 1000)
-  })
-}
 </script>
 
 <style scoped lang="scss">
 .common-layout {
   height: 100vh;
-}
-
-.header {
-  margin: 0;
-  height: 72px;
 }
 
 p {

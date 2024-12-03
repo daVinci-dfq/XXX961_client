@@ -168,7 +168,7 @@ import {
   waterFallInit,
   waterFallMore
 } from '@/utils/waterFall'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/modules/user'
 import { ElMessage } from 'element-plus'
 
 const route = useRoute()

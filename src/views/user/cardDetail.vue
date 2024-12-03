@@ -10,7 +10,7 @@ import {
   loadReplies
 } from '@/utils/api'
 import { ElMessage } from 'element-plus'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/modules/user'
 import { getCurrentTime } from '@/utils/getTime'
 
 const props = defineProps({

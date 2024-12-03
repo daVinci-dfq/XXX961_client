@@ -9,7 +9,7 @@ import { isUserLoggedIn } from '@/auth/auth'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/main',
+    redirect: '/explore',
     meta: {
       info: 'Welcome!'
     }
@@ -34,15 +34,16 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: 'explore',
-        component: () => import('../views/main/cpns/Explore.vue')
+        path: '/explore',
+        name: 'explore',
+        component: () => import('@/views/main/cpns/Explore.vue')
+      },
+      {
+        path: '/info',
+        name: 'info',
+        component: () => import('@/views/user/info.vue')
       }
     ]
-  },
-  {
-    path: '/info',
-    name: 'info',
-    component: () => import('@/views/user/info.vue')
   },
 
   {
@@ -54,8 +55,8 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/text',
-    name: 'text',
+    path: '/test',
+    name: 'test',
     component: () => import('@/views/test/test.vue')
   }
 ]
