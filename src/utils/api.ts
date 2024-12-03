@@ -1,4 +1,4 @@
-import http from '@/utils/http'
+import httpService from '@/service/httpService'
 import axios from 'axios'
 
 // 登录
@@ -9,7 +9,7 @@ export const login = ({
   username: string
   password: string
 }) => {
-  return http({
+  return httpService.http({
     url: '/login/',
     method: 'POST',
     headers: {
@@ -31,7 +31,9 @@ export const getEmail = {
     email: string
   }): Promise<{ code: number; message: string }> {
     try {
-      const response = await axios.get('/code', { params: data })
+      const response = await httpService
+        .getAxiosInstance()
+        .get('/user/code', { params: data })
       return response.data
     } catch (error) {
       console.error('Error fetching email code:', error)
@@ -48,7 +50,7 @@ export const Register = ({
   username: string
   password: string
 }) => {
-  return http({
+  return httpService.http({
     url: '/register/',
     method: 'POST',
     headers: {
@@ -64,8 +66,8 @@ export const Register = ({
 
 // 访问用户主页
 export const queryUserIndex = ({ id }: { id: string }) => {
-  return http({
-    url: '/info/',
+  return httpService.http({
+    url: '/info/', //###################################
     method: 'POST',
     data: {
       id
@@ -75,7 +77,7 @@ export const queryUserIndex = ({ id }: { id: string }) => {
 
 // 上传帖子
 export const uploadPost = (data: any) => {
-  return http({
+  return httpService.http({
     url: '/upload/info/',
     method: 'POST',
     data: data
@@ -84,7 +86,7 @@ export const uploadPost = (data: any) => {
 
 // 帖子详情
 export const postDetail = ({ id }: { id: number }) => {
-  return http({
+  return httpService.http({
     url: '/post/detail/',
     method: 'POST',
     data: {
@@ -101,7 +103,7 @@ export const queryPost = ({
   offset: number
   query: string | string[]
 }) => {
-  return http({
+  return httpService.http({
     url: '/post/',
     method: 'POST',
     data: { offset, query }
@@ -110,7 +112,7 @@ export const queryPost = ({
 
 // 评论帖子
 export const doComment = ({ data }: { data: any }) => {
-  return http({
+  return httpService.http({
     url: '/comment/',
     method: 'POST',
     data: data
@@ -119,7 +121,7 @@ export const doComment = ({ data }: { data: any }) => {
 
 // 用户关注
 export const doFocus = ({ id }: { id: number }) => {
-  return http({
+  return httpService.http({
     url: '/focus/',
     method: 'POST',
     data: { id }
@@ -128,13 +130,13 @@ export const doFocus = ({ id }: { id: number }) => {
 
 // 获取用户关注
 export const queryUserFocus = () => {
-  return http({
+  return httpService.http({
     url: '/user/focus/'
   })
 }
 
 export const unFollow = ({ id }: { id: number }) => {
-  return http({
+  return httpService.http({
     url: '/user/unfollow/',
     method: 'POST',
     data: { id }
@@ -148,7 +150,7 @@ export const updateUserInfo = ({
   username: string
   signature: string
 }) => {
-  return http({
+  return httpService.http({
     url: '/user/update/',
     method: 'POST',
     data: {
@@ -167,7 +169,7 @@ export const queryUserPost = ({
   types: string
   offset: number
 }) => {
-  return http({
+  return httpService.http({
     url: '/user/post/',
     method: 'POST',
     data: {
@@ -187,7 +189,7 @@ export const controlUserCollectOrLike = ({
   operator: any
   type: string
 }) => {
-  return http({
+  return httpService.http({
     url: '/post/control/',
     method: 'POST',
     data: {
@@ -199,7 +201,7 @@ export const controlUserCollectOrLike = ({
 }
 
 export const getComment = ({ id, offset }: { id: number; offset: number }) => {
-  return http({
+  return httpService.http({
     url: '/comment/main/',
     method: 'POST',
     data: {
@@ -216,7 +218,7 @@ export const queryUserPostControl = ({
   offset: number
   types: string
 }) => {
-  return http({
+  return httpService.http({
     url: '/user/post/control/',
     method: 'POST',
     data: {
@@ -227,7 +229,7 @@ export const queryUserPostControl = ({
 }
 
 export const postDelete = ({ id }: { id: number }) => {
-  return http({
+  return httpService.http({
     url: '/post/delete/',
     method: 'POST',
     data: {
@@ -237,7 +239,7 @@ export const postDelete = ({ id }: { id: number }) => {
 }
 
 export const removeFan = ({ id }: { id: number }) => {
-  return http({
+  return httpService.http({
     url: '/user/remove/fan/',
     method: 'POST',
     data: {
@@ -247,7 +249,7 @@ export const removeFan = ({ id }: { id: number }) => {
 }
 
 export const loadReplies = ({ id, offset }: { id: number; offset: number }) => {
-  return http({
+  return httpService.http({
     url: '/comment/reply/',
     method: 'POST',
     data: {

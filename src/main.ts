@@ -11,7 +11,7 @@ import './assets/css/index.less'
 
 //创建应用实例对象
 const app = createApp(App)
-// const pinia = createPinia()
+const pinia = createPinia()
 
 //pinia使用:
 //import useCounterStore from "///"
@@ -20,7 +20,7 @@ const app = createApp(App)
 //const {name,doubleCount} = storeToRef(store) //对数据进行解构要用storeToRef()
 //const {increment} = store//对方法进行解析不需要
 
-// app.use(createPinia().use(piniaPluginPersistedstate)) //pinia安装以及持久化配置
+app.use(pinia) //pinia安装以及持久化配置
 app.use(router) // 安装路由插件。
 // app.use(axios)
 

@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/login/LoginDialog.vue'), // 懒加载页面。
+    component: () => import('@/views/login/cpns/LoginDialog.vue'), // 懒加载页面。
     meta: {
       info: 'Login!',
       requiresAuth: false
@@ -46,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/info',
     name: 'info',
-    component: () => import('@/views/main/users/info.vue')
+    component: () => import('@/views/user/info.vue')
   },
 
   {

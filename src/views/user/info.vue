@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div>
     <div class="userInfo" v-if="userInfo.user">
       <el-row :gutter="10">
@@ -157,8 +157,8 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import HomeCard from '@/views/main/users/homecard.vue'
-import CardDetail from '@/views/main/users/cardDetail.vue'
+import HomeCard from '@/views/user/homecard.vue'
+import CardDetail from '@/views/user/cardDetail.vue'
 import { Back } from '@element-plus/icons-vue'
 import { doFocus, queryUserIndex, queryUserPost } from '@/utils/api'
 import { controlDetail } from '@/stores/controlDetail'
@@ -417,4 +417,4 @@ onMounted(async () => {
 .fade-leave-active {
   animation: scale-up-center 0.5s linear both reverse;
 }
-</style> -->
+</style>
