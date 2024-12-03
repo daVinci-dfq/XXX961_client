@@ -56,7 +56,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/text',
     name: 'text',
-    component: () => import('@/views/main/cpns/text.vue')
+    component: () => import('@/views/test/test.vue')
   }
 ]
 

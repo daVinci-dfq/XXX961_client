@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/modules/user'
 import { postDetail } from '@/utils/api'
 
 export const controlDetail = () => {
