@@ -450,7 +450,6 @@ label {
   position: relative;
   left: -62px;
   top: 5px;
-  
 }
 .checkbox-custom {
   transform: scale(1.5); /* 放大1.5倍 */

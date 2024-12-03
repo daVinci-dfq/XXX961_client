@@ -31,7 +31,9 @@ export const getEmail = {
     email: string
   }): Promise<{ code: number; message: string }> {
     try {
-      const response = await axios.get('/user/code', { params: data })
+      const response = await httpService
+        .getAxiosInstance()
+        .get('/user/code', { params: data })
       return response.data
     } catch (error) {
       console.error('Error fetching email code:', error)
