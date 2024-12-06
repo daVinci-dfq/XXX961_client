@@ -4,7 +4,7 @@ import { createPinia } from 'pinia' // 引入Pinia。
 // import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import App from './App.vue' // 导入根组件（也称App组件）。
-import router from './router' // 路由。
+import router from './router/index' // 路由。
 // import axios from './service' // 通信。
 import 'normalize.css'
 import './assets/css/index.less'

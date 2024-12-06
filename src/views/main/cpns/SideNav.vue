@@ -51,11 +51,11 @@ const handleClose = (key: string, keyPath: string[]) => {
 const information = () => {
   router.push({ name: 'info' })
 }
-const test = () => {
-  router.push({ name: 'test' })
-}
 const explore = () => {
   router.push({ name: 'explore' })
+}
+const test = () => {
+  router.push({ name: 'test' })
 }
 </script>
 

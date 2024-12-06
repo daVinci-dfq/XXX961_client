@@ -30,7 +30,8 @@ export default defineConfig({
     port: 9610,
     proxy: {
       '/api': {
-        target: 'http://localhost:6539'
+        target: 'http://localhost:6539/',
+        changeOrigin: true // 允许跨域
       }
     }
   }

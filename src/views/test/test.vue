@@ -1,24 +1,24 @@
 <template>
-  <div>
+  <div class="test">
     <h2>WebSocket Service Test</h2>
-    <el-button @click="connect">Connect</el-button>
-    <!-- <el-button @click="disconnect" :disabled="!isConnected"
+    <el-button @click="connect" :disabled="isConnected">Connect</el-button>
+    <el-button @click="disconnect" :disabled="!isConnected"
       >Disconnect</el-button
-    > -->
-    <!-- <el-button @click="sendMessage" :disabled="!isConnected"
+    >
+    <el-button @click="sendMessage" :disabled="!isConnected"
       >Send Message</el-button
-    > -->
+    >
 
     <el-input
       v-model="messageToSend"
       placeholder="Type a message to send"
     ></el-input>
-    <!-- <el-alert
+    <el-alert
       v-if="isConnected"
       title="Connected to WebSocket"
       type="success"
-    ></el-alert> -->
-    <!-- <el-alert v-else title="Not connected" type="info"></el-alert> -->
+    ></el-alert>
+    <el-alert v-else title="Not connected" type="info"></el-alert>
   </div>
 </template>
 
@@ -27,43 +27,44 @@ import { ref } from 'vue'
 import { WebSocketService } from '@/service/WebSocketService' // 确保路径正确
 import { ElButton, ElInput, ElAlert } from 'element-plus'
 
-const wsService = new WebSocketService()
-// const isConnected = ref(wsService.isConnected)
+const webSocketService = new WebSocketService()
+const isConnected = ref(webSocketService.isConnected)
 const messageToSend = ref('')
 
 // 连接 WebSocket
 const connect = () => {
-  wsService
+  console.log('Connecting to WebSocket...')
+  webSocketService
     .connect()
     .then(() => {
-      console.log('Connected to WebSocket')
-      // isConnected.value = true
+      console.log('WebSocket connected!')
+      isConnected.value = true
     })
     .catch((error) => {
       console.error('Error connecting to WebSocket:', error)
     })
 }
 
-// 断开 WebSocket 连接
-const disconnect = () => {
-  wsService.disconnect()
-  // isConnected.value = false
-}
+// // 断开 WebSocket 连接
+// const disconnect = () => {
+//   wsService.disconnect()
+//   isConnected.value = false
+// }
 
-// 发送消息
-const sendMessage = () => {
-  if (messageToSend.value.trim()) {
-    wsService.sendMessage('/queue/test', { message: messageToSend.value })
-    console.log('Message sent:', messageToSend.value)
-    messageToSend.value = '' // 清空输入框
-  }
-}
+// // 发送消息
+// const sendMessage = () => {
+//   if (messageToSend.value.trim()) {
+//     wsService.sendMessage('/queue/test', { message: messageToSend.value })
+//     console.log('Message sent:', messageToSend.value)
+//     messageToSend.value = '' // 清空输入框
+//   }
+// }
 
-// 监听消息
-wsService.subscribe('/queue/test', (message) => {
-  console.log('Received message:', message)
-  alert(`Received message: ${message.message}`) // 显示接收到的消息
-})
+// // 监听消息
+// wsService.subscribe('/queue/test', (message) => {
+//   console.log('Received message:', message)
+//   alert(`Received message: ${message.message}`) // 显示接收到的消息
+// })
 </script>
 
 <style scoped>
