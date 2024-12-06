@@ -1,13 +1,23 @@
 import { ref } from 'vue'
-import SockJS from 'sockjs-client'
+// import { Socket } from 'socket-client' // 是个隐蔽的错误！经过一顿忙活，发现这样不行，应该采用下面的方式，目前原理不清。
+import SockJS from 'sockjs-client/dist/sockjs.min.js'
 import { Client, Stomp } from '@stomp/stompjs'
+
+/**
+ * @author: daVinci
+ * @description: 单例模式的WebSocketService类，用于管理WebSocket STOMP连接和消息发送和接收。
+ */
 
 export class WebSocketService {
   private static instance: WebSocketService | null = null
   private stompClient: Client | null = null
-  private isConnected = ref(false)
+  public isConnected = ref(false)
   private socketEndpoint = ref('http://localhost:6539/webSocket')
 
+  /**
+   * WebSocketService类的构造函数，用于创建WebSocketService实例。如果已经存在实例，则返回该实例。
+   * @returns 单例模式的WebSocketService实例。
+   */
   constructor() {
     if (WebSocketService.instance) {
       return WebSocketService.instance
