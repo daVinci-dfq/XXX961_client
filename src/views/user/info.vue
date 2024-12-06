@@ -1,11 +1,24 @@
 <template>
   <div>
     <div class="userInfo">
-      <el-avatar
-        :size="200"
-        src="/public/avatar.jpg"
-        class="avatarsize"
-      ></el-avatar>
+      <el-upload
+        ref="uploadRef"
+        class="avatar-uploader"
+        @click="chooseAvatar"
+        :show-file-list="false"
+        :action="uploadUrl"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
+      >
+        <el-avatar v-if="imgUrl" :size="200" :src="imgUrl" class="avatarsize">
+        </el-avatar>
+        <el-avatar
+          v-else
+          :size="200"
+          src="/public/avatar.jpg"
+          class="avatarsize"
+        ></el-avatar>
+      </el-upload>
       <el-col :span="7" style="width: 250px !important" class="introduce">
         <h2>zxz</h2>
         <p>啦啦啦啦啦啦</p>
@@ -158,7 +171,7 @@ import {
   waterFallMore
 } from '@/utils/waterFall'
 import { useUserStore } from '@/stores/modules/user'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElUpload } from 'element-plus'
 
 const route = useRoute()
 const Details = controlDetail()
@@ -166,12 +179,41 @@ const userStore = useUserStore()
 
 // 加载用户信息 //////////////////////////////////////////////////////////////
 const userInfo = ref({})
+const uploadRef = ref(null)
+const imgUrl = ref('')
+// const uploadUrl = '/api/upload/avatar' 后端上传接口地址
 
 const getUserInfo = async () => {
   const id = route.params.id
   const res = await queryUserIndex({ id })
   userInfo.value = res.data
   document.title = res.data.user.username + ' .xhs'
+}
+
+//////////头像/////////////
+const handleAvatarSuccess = (response, file) => {
+  imgUrl.value = URL.createObjectURL(file.raw)
+  alert(imgUrl.value)
+  // TODO: 更新用户头像信息
+}
+const chooseAvatar = () => {
+  uploadRef.value?.click()
+}
+const beforeAvatarUpload = (file) => {
+  alert('2222')
+  const isJPG = file.type === 'image/jpeg'
+  const isPNG = file.type === 'image/png'
+  const isLt2M = file.size / 1024 / 1024 < 2
+
+  if (!isJPG && !isPNG) {
+    alert('上传头像图片只能是 JPG/PNG 格式!')
+    return false
+  }
+  if (!isLt2M) {
+    alert('上传头像图片大小不能超过 2MB!')
+    return false
+  }
+  return true
 }
 const checkFollow = (id) => {
   if (userStore.userInfo.id === id) {
@@ -408,6 +450,20 @@ onMounted(async () => {
   animation: scale-up-center 0.5s linear both reverse;
 }
 .avatarsize {
+  margin-right: 50px;
+}
+
+.avatar-uploader {
+  display: block;
+  border-radius: 200px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 200px;
+  height: 200px;
   margin-right: 40px;
+}
+::v-deep.hide .el-upload--picture-card {
+  display: none;
 }
 </style>
