@@ -111,10 +111,12 @@ const props = defineProps({
 })
 const popupRef = ref<HTMLElement | null>(null)
 
-const emit = defineEmits(['update:modelValue', 'confirm'])
-
 const visible = ref(props.loginDialogVisible)
 const rememberMe = ref(false)
+
+const afterLogin = ref(false)
+
+const emit = defineEmits(['update:modelValue', 'confirm', 'afterLogin'])
 
 watch(
   () => props.loginDialogVisible,
@@ -122,6 +124,9 @@ watch(
     visible.value = newValue
   }
 )
+onMounted(() => {
+  emit('afterLogin', afterLogin)
+})
 //注册
 const registerForm = ref({
   username: '',
@@ -195,8 +200,9 @@ function toggleSignUp() {
 const submitFrom = async () => {
   try {
     loading.value = true
-    const res = await login({ ...form.value })
+    const res = await login(loginForm.value)
     console.log('🚀 ~ submitForm ~ res:', res)
+    afterLogin.value = true
   } catch (error) {
     console.log('登陆失败')
   } finally {

@@ -1,35 +1,23 @@
 <template>
   <div>
-    <div class="userInfo" v-if="userInfo.user">
-      <el-row :gutter="10">
-        <el-col :span="7" style="width: 250px">
-          <el-avatar :size="150" :src="userInfo.user.avatar"></el-avatar>
-        </el-col>
-        <el-col :span="7" style="width: 250px !important">
-          <h2>{{ userInfo.user.username }}</h2>
-          <p>{{ userInfo.user.signature }}</p>
-          <div class="tagArea">
-            <el-tag class="ml-2" type="success" round
-              >{{ userInfo.user.focusOn }} 关注</el-tag
-            >
-            <el-tag class="ml-2" type="info" round
-              >{{ userInfo.user.fans }} 粉丝</el-tag
-            >
-            <el-tag class="ml-2" type="warning" round
-              >{{ userInfo.user.postsCount }} 笔记数</el-tag
-            >
-          </div>
-        </el-col>
-        <el-col :span="5" style="width: 100px">
-          <button
-            class="focusOn"
-            v-if="!checkFollow(userInfo.user.id)"
-            @click="doFocusOn(userInfo.user.id)"
-          >
-            关注
-          </button>
-        </el-col>
-      </el-row>
+    <div class="userInfo">
+      <el-avatar
+        :size="200"
+        src="/public/avatar.jpg"
+        class="avatarsize"
+      ></el-avatar>
+      <el-col :span="7" style="width: 250px !important" class="introduce">
+        <h2>zxz</h2>
+        <p>啦啦啦啦啦啦</p>
+        <div class="tagArea">
+          <el-tag class="ml-2" type="success" round>XXX 关注</el-tag>
+          <el-tag class="ml-2" type="info" round>XX 粉丝</el-tag>
+          <el-tag class="ml-2" type="warning" round>XXXX笔记数</el-tag>
+        </div>
+      </el-col>
+      <el-col :span="5" style="width: 100px">
+        <button class="focusOn">关注</button>
+      </el-col>
     </div>
     <div class="checkBox" @change="Toggle">
       <el-radio-group v-model="radio" size="large">
@@ -38,6 +26,7 @@
         <el-radio-button class="radio" label="点赞" name="like" />
       </el-radio-group>
     </div>
+    <hr />
     <div style="margin-top: 30px" v-if="userInfo.user">
       <div v-if="radio === '帖子'">
         <div v-if="userPost.length === 0">
@@ -349,6 +338,7 @@ onMounted(async () => {
 .userInfo {
   display: flex;
   width: 100%;
+  height: 250px;
   align-items: center;
   justify-content: center;
 }
@@ -416,5 +406,8 @@ onMounted(async () => {
 
 .fade-leave-active {
   animation: scale-up-center 0.5s linear both reverse;
+}
+.avatarsize {
+  margin-right: 40px;
 }
 </style>

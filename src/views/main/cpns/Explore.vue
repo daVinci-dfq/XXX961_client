@@ -20,7 +20,17 @@
             </div>
           </template>
           <template #right>
-            <el-button link @click="loginDialogVisible = true">Login</el-button>
+            <div v-if="!afterLogin">
+              <el-button
+                link
+                @click="loginDialogVisible = true"
+                @afterLogin="getLoginData"
+                >Login</el-button
+              >
+            </div>
+            <div v-else class="avatar">
+              <img :src="avatarSrc" class="avatar" />
+            </div>
             <el-button link>Exit</el-button>
           </template>
         </top-bar>
@@ -58,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, inject } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 import Classifications from './Classifications.vue'
 import LoginDialog from '@/views/login/cpns/LoginDialog.vue'
@@ -67,12 +77,15 @@ import type { ICardItem } from '../waterfall-layout/type'
 import list from '../waterfall-layout/config/index'
 
 const search_input = ref('')
+const afterLogin = ref(false)
 const loginDialogVisible = ref(false)
+const avatarSrc = ref('public/image1.jpg') // 头像路径
 
 const login = (loginData: { username: string; password: string }) => {
   console.log('Username:', loginData.username)
   console.log('Password:', loginData.password)
 }
+
 // 在这里处理登录逻辑
 
 const fContainerRef = ref<HTMLDivElement | null>(null)
@@ -81,6 +94,10 @@ const fContainerObserver = new ResizeObserver((entries) => {
   changeColumn(entries[0].target.clientWidth)
 })
 
+const getLoginData = () => {
+  afterLogin.value = false
+  console.log(afterLogin.value)
+}
 const handleLoginDialogVisible = (newValue: boolean) => {
   loginDialogVisible.value = newValue
 }
@@ -197,5 +214,20 @@ p {
   to {
     transform: rotate(3deg);
   }
+}
+
+//avatar
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10px;
+}
+
+.avatar {
+  width: 10px; /* 调整头像大小 */
+  height: 10px;
+  border-radius: 50%; /* 使头像呈圆形 */
+  object-fit: cover; /* 确保图片覆盖整个容器 */
 }
 </style>
