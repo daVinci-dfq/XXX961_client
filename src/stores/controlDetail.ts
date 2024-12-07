@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
-import { postDetail } from '@/utils/api'
+import { postDetail } from '@/api/user'
 
 export const controlDetail = () => {
   type Detail = {

@@ -8,7 +8,7 @@ import {
   controlUserCollectOrLike,
   getComment,
   loadReplies
-} from '@/utils/api'
+} from '@/api/user'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/modules/user'
 import { getCurrentTime } from '@/utils/getTime'

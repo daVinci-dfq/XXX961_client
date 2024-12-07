@@ -1,65 +1,11 @@
-import httpService from '@/service'
 import axios from 'axios'
-
-// 登录
-export const login = ({
-  username,
-  password
-}: {
-  username: string
-  password: string
-}) => {
-  return httpService.http({
-    url: '/login/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: {
-      username,
-      password
-    }
-  })
-}
-
-/**
- * 注册
- *
- */
-export const getEmail = {
-  async getEmailCode(data: {
-    email: string
-  }): Promise<{ code: number; message: string }> {
-    try {
-      const response = await httpService
-        .getAxiosInstance()
-        .get('/user/code', { params: data })
-      return response.data
-    } catch (error) {
-      console.error('Error fetching email code:', error)
-      throw error
-    }
-  }
-}
-export const Register = ({
-  email,
-  username,
-  password
-}: {
-  email: string
-  username: string
-  password: string
-}) => {
-  return httpService.http({
-    url: '/register/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: {
-      username,
-      password,
-      email
+import httpService from '@/service/HttpService'
+export const refreshToken = (refreshToken: string) => {
+  return httpService.http<any>({
+    url: `/auth/auth/refreshToken/`, // mock接口  ///////////////
+    method: 'get',
+    params: {
+      refreshToken
     }
   })
 }

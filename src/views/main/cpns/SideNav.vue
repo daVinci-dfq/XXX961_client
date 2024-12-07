@@ -14,7 +14,7 @@
           </el-menu-item>
           <el-menu-item index="2">
             <el-icon><CirclePlus /></el-icon>
-            <span>Post</span>
+            <span @click="post">Post</span>
           </el-menu-item>
           <el-menu-item index="3">
             <el-icon><Bell /></el-icon>
@@ -56,6 +56,9 @@ const explore = () => {
 }
 const test = () => {
   router.push({ name: 'test' })
+}
+const post = () => {
+  router.push({ name: 'post' })
 }
 </script>
 

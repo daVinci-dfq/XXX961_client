@@ -10,7 +10,10 @@ import {
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
 import { Message } from '@element-plus/icons-vue'
-import { Register, login, queryUserFocus } from '@/utils/api'
+import { Register, login } from '@/api/login'
+import { storage } from '@/utils/storage'
+import { refreshToken } from '@/api/user'
+import type { User } from '@/type/user'
 // import { appStore } from './appStore';
 // import router from '~/router';
 // const aStore = appStore()
@@ -32,42 +35,17 @@ export const useUserStore = defineStore('user', () => {
   }) => {
     await Register({ email, username, password })
   }
-  const getUserInfo = async ({
-    username,
-    password
-  }: {
-    username: string
-    email: string
-    password: string
-  }) => {
-    userInfo.value = await login({ password, username })
-    // const focusResult = await queryUserFocus()
-    // // userFocus.value = focusResult.info.follow
-    // // userCollect.value = focusResult.info.collected
-    // // userFavorite.value = focusResult.info.favorites
-    // // headersObj.value = { Authorization: `Bearer ${userInfo.value.token}` }
+  const getUserInfo = (): User => {
+    return storage.get('userInfo') as User
   }
+
   const userLogout = async () => {
     userInfo.value = {}
     return { info: '成功退出登录' }
   }
-  const removeFocus = (type: number, id: number) => {
-    if (type === 1) {
-      const index = userFocus.value.indexOf(id)
-      if (index !== -1) {
-        userFocus.value.splice(index, 1)
-      }
-    } else if (type === 2) {
-      const index = userFavorite.value.indexOf(id)
-      if (index !== -1) {
-        userFavorite.value.splice(index, 1)
-      }
-    } else if (type === 3) {
-      const index = userCollect.value.indexOf(id)
-      if (index !== -1) {
-        userCollect.value.splice(index, 1)
-      }
-    }
+  const isLogin = () => {
+    const user = storage.get('userInfo') as User
+    return user != null && user != undefined
   }
 
   const changeInfo = ({
@@ -83,6 +61,22 @@ export const useUserStore = defineStore('user', () => {
     userInfo.value.signature = signature
     userInfo.value.avatar = avatar
   }
+
+  const getToken = () => {
+    return storage.get('accessToken')
+  }
+  const getNewToken = (token: string) => {
+    return new Promise<any>((resolve, reject) => {
+      refreshToken(token)
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
   return {
     userInfo,
     getUserInfo,
@@ -94,6 +88,9 @@ export const useUserStore = defineStore('user', () => {
     changeInfo,
     userCollect,
     userFavorite,
-    headersObj
+    headersObj,
+    getNewToken,
+    getToken,
+    isLogin
   }
 })
