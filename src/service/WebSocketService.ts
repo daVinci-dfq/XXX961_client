@@ -1,6 +1,6 @@
 import { ref } from 'vue'
-// import { Socket } from 'socket-client' // 是个隐蔽的错误！经过一顿忙活，发现这样不行，应该采用下面的方式，目前原理不清。
-import SockJS from 'sockjs-client/dist/sockjs.min.js'
+// import { Socket } from 'socket-client' // 这是个隐蔽的错误！经过一顿忙活，发现这样不行，应该采用下面的方式，目前原理不清。
+import SockJS from 'sockjs-client/dist/sockjs.min.js' // 这个报错请不要理会，别问，问就是他有他自己的节奏。
 import { Client, Stomp } from '@stomp/stompjs'
 
 /**
@@ -26,6 +26,7 @@ export class WebSocketService {
   }
 
   public connect() {
+    console.log('Connecting to WebSocket STOMP...')
     return new Promise<void>((resolve, reject) => {
       this.stompClient = Stomp.over(() => {
         return new SockJS(this.socketEndpoint.value)
@@ -49,6 +50,7 @@ export class WebSocketService {
   }
 
   public disconnect(): void {
+    console.log('Disconnecting from WebSocket STOMP...')
     if (this.stompClient && this.stompClient.connected) {
       this.stompClient.deactivate()
       this.isConnected.value = false
@@ -57,22 +59,26 @@ export class WebSocketService {
   }
 
   public sendMessage(destination: string, message: object): void {
+    console.log('Sending message to ', destination)
     if (this.stompClient && this.isConnected) {
       this.stompClient.publish({
         destination: destination,
         body: JSON.stringify(message)
       })
     }
+    console.log('Message sented!')
   }
 
   public subscribe(
     destination: string,
     callback: (message: any) => void
   ): void {
+    console.log('Subscribing to ', destination)
     if (this.stompClient && this.isConnected) {
       this.stompClient.subscribe(destination, (frame: any) => {
         callback(JSON.parse(frame.body))
       })
     }
+    console.log('Subscribed!')
   }
 }

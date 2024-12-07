@@ -1,4 +1,4 @@
-import httpService from '@/service/HttpService'
+import httpService from '@/service'
 import axios from 'axios'
 
 // 登录

@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { WebSocketService } from '@/service/WebSocketService' // 确保路径正确
+import { WebSocketService } from '@/service/WebSocketService'
 import { ElButton, ElInput, ElAlert } from 'element-plus'
 
 const webSocketService = new WebSocketService()
@@ -45,28 +45,30 @@ const connect = () => {
     })
 }
 
-// // 断开 WebSocket 连接
-// const disconnect = () => {
-//   wsService.disconnect()
-//   isConnected.value = false
-// }
+// 断开 WebSocket 连接
+const disconnect = () => {
+  webSocketService.disconnect()
+  isConnected.value = false
+  console.log('WebSocket disconnected!')
+}
 
-// // 发送消息
-// const sendMessage = () => {
-//   if (messageToSend.value.trim()) {
-//     wsService.sendMessage('/queue/test', { message: messageToSend.value })
-//     console.log('Message sent:', messageToSend.value)
-//     messageToSend.value = '' // 清空输入框
-//   }
-// }
+// 发送消息
+const sendMessage = () => {
+  if (messageToSend.value.trim()) {
+    webSocketService.sendMessage('/queue/test', {
+      message: messageToSend.value
+    })
+    console.log('Message sent:', messageToSend.value)
+    messageToSend.value = '' // 清空输入框
+  }
+}
 
-// // 监听消息
-// wsService.subscribe('/queue/test', (message) => {
-//   console.log('Received message:', message)
-//   alert(`Received message: ${message.message}`) // 显示接收到的消息
-// })
+// 监听消息
+webSocketService.subscribe('/queue/test', (message) => {
+  console.log('Received message:', message)
+  alert(`Received message: ${message.message}`) // 显示接收到的消息
+})
 </script>
 
 <style scoped>
-/* 你可以在这里添加一些自定义样式 */
 </style>
