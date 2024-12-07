@@ -1,469 +1,391 @@
 <template>
-  <div>
-    <div class="userInfo">
-      <el-upload
-        ref="uploadRef"
-        class="avatar-uploader"
-        @click="chooseAvatar"
-        :show-file-list="false"
-        :action="uploadUrl"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
-      >
-        <el-avatar v-if="imgUrl" :size="200" :src="imgUrl" class="avatarsize">
-        </el-avatar>
-        <el-avatar
-          v-else
-          :size="200"
-          src="/public/avatar.jpg"
-          class="avatarsize"
-        ></el-avatar>
-      </el-upload>
-      <el-col :span="7" style="width: 250px !important" class="introduce">
-        <h2>zxz</h2>
-        <p>啦啦啦啦啦啦</p>
-        <div class="tagArea">
-          <el-tag class="ml-2" type="success" round>XXX 关注</el-tag>
-          <el-tag class="ml-2" type="info" round>XX 粉丝</el-tag>
-          <el-tag class="ml-2" type="warning" round>XXXX笔记数</el-tag>
+  <div class="user-page">
+    <div class="user">
+      <div class="user-info">
+        <div class="avatar">
+          <div class="avatar-wrapper">
+            <img
+              :src="userInfo.avatar"
+              class="user-image"
+              style="border: 1px solid rgba(0, 0, 0, 0.08)"
+            />
+          </div>
         </div>
-      </el-col>
-      <el-col :span="5" style="width: 100px">
-        <button class="focusOn">关注</button>
-      </el-col>
+        <div class="info-part">
+          <div class="info">
+            <div class="basic-info">
+              <div class="user-basic">
+                <div class="user-nickname">
+                  <div class="user-name">
+                    {{ userInfo.username
+                    }}<!---->
+                  </div>
+                </div>
+                <div class="user-content">
+                  <span class="user-redId">小红书号：{{ userInfo.yxId }}</span
+                  ><span class="user-IP"> IP属地：广东</span>
+                </div>
+              </div>
+            </div>
+            <div class="user-desc">
+              <span v-if="userInfo.description === null"
+                >这个人什么都没有写～</span
+              >
+              <span v-else>{{ userInfo.description }}</span>
+            </div>
+            <div class="user-tags">
+              <div class="tag-item">
+                <div>射手座</div>
+              </div>
+              <div class="tag-item">
+                <div>广东广州</div>
+              </div>
+              <div class="tag-item">
+                <div>程序员</div>
+              </div>
+            </div>
+            <div class="data-info">
+              <div class="user-interactions">
+                <div>
+                  <span class="count">{{ userInfo.trendCount }}</span
+                  ><span class="shows">作品</span>
+                </div>
+                <div>
+                  <span class="count">{{ userInfo.followerCount }}</span
+                  ><span class="shows">关注</span>
+                </div>
+                <div>
+                  <span class="count">{{ userInfo.fanCount }}</span
+                  ><span class="shows">粉丝</span>
+                </div>
+              </div>
+            </div>
+            <!---->
+          </div>
+          <div class="follow"><!----></div>
+        </div>
+
+        <!-- <div class="tool-btn" v-show="uid !== currentUid">
+          <el-button :icon="ChatLineRound" circle @click="toChat" />
+
+          <el-button type="info" round v-if="_isFollow" @click="follow(uid, 1)"
+            >已关注</el-button
+          >
+          <el-button type="danger" round v-else @click="follow(uid, 0)"
+            >关注</el-button
+          > -->
+        <!-- </div>  -->
+      </div>
     </div>
-    <div class="checkBox" @change="Toggle">
-      <el-radio-group v-model="radio" size="large">
-        <el-radio-button class="radio" label="帖子" name="post" />
-        <el-radio-button class="radio" label="收藏" name="collect" />
-        <el-radio-button class="radio" label="点赞" name="like" />
-      </el-radio-group>
+    <div
+      class="reds-sticky-box user-page-sticky"
+      style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
+    >
+      <div class="reds-sticky" style="">
+        <div class="tertiary center reds-tabs-list" style="padding: 0px 12px">
+          <div
+            :class="type == 1 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
+          >
+            <!----><!----><span @click="toPage(1)">笔记</span>
+          </div>
+          <div
+            :class="type == 2 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
+          >
+            <!----><!----><span @click="toPage(2)">点赞</span>
+          </div>
+          <div
+            :class="type == 3 ? 'reds-tab-item active' : 'reds-tab-item'"
+            style="padding: 0px 16px; margin-right: 0px; font-size: 16px"
+          >
+            <!----><!----><span @click="toPage(3)">收藏</span>
+          </div>
+          <!---->
+          <div class="active-tag" style="width: 64px; left: 627px"></div>
+        </div>
+      </div>
     </div>
-    <hr />
-    <div style="margin-top: 30px" v-if="userInfo.user">
-      <div v-if="radio === '帖子'">
-        <div v-if="userPost.length === 0">
-          <el-empty description="现在还没有帖子..." />
-        </div>
-        <div
-          v-infinite-scroll="load"
-          :infinite-scroll-disabled="disabled"
-          :infinite-scroll-delay="200"
-          :infinite-scroll-distance="100"
-          v-else
-        >
-          <home-card
-            :card_columns="card_columns_posts"
-            @show-detail="showMessage"
-          ></home-card>
-        </div>
-        <transition
-          name="fade"
-          @before-enter="onBeforeEnter"
-          @after-enter="onAfterEnter"
-          @before-leave="onBeforeLeave"
-          @after-leave="onAfterLeave"
-        >
-          <div class="overlay" v-if="show">
-            <button style="display: none" class="backPage" @click="close">
-              <el-icon>
-                <Back />
-              </el-icon>
-            </button>
-            <card-detail
-              :detail="detail"
-              @afterDoComment="afterDoComment"
-              ref="overlay"
-            />
-          </div>
-        </transition>
-      </div>
-      <div v-else-if="radio === '收藏'">
-        <div v-if="userCollect.length === 0">
-          <el-empty description="现在还没有收藏..." />
-        </div>
-        <div
-          v-infinite-scroll="load"
-          :infinite-scroll-disabled="disabled"
-          :infinite-scroll-delay="200"
-          :infinite-scroll-distance="100"
-          v-else
-        >
-          <home-card
-            :card_columns="card_columns_collect"
-            ref="overlay"
-            @show-detail="showMessage"
-          ></home-card>
-        </div>
-        <transition
-          name="fade"
-          @before-enter="onBeforeEnter"
-          @after-enter="onAfterEnter"
-          @before-leave="onBeforeLeave"
-          @after-leave="onAfterLeave"
-        >
-          <div class="overlay" v-if="show">
-            <button style="display: none" class="backPage" @click="close">
-              <el-icon>
-                <Back />
-              </el-icon>
-            </button>
-            <card-detail
-              :detail="detail"
-              @afterDoComment="afterDoComment"
-              ref="overlay"
-            />
-          </div>
-        </transition>
-      </div>
-      <div v-else-if="radio === '点赞'">
-        <div v-if="userFavorite.length === 0">
-          <el-empty description="现在还没有点赞..." />
-        </div>
-        <div
-          v-infinite-scroll="load"
-          :infinite-scroll-disabled="disabled"
-          :infinite-scroll-delay="200"
-          :infinite-scroll-distance="100"
-          v-else
-        >
-          <home-card
-            :card_columns="card_columns_like"
-            @show-detail="showMessage"
-          ></home-card>
-        </div>
-        <transition
-          name="fade"
-          @before-enter="onBeforeEnter"
-          @after-enter="onAfterEnter"
-          @before-leave="onBeforeLeave"
-          @after-leave="onAfterLeave"
-        >
-          <div class="overlay" v-if="show">
-            <button style="display: none" class="backPage" @click="close">
-              <el-icon>
-                <Back />
-              </el-icon>
-            </button>
-            <card-detail
-              :detail="detail"
-              @afterDoComment="afterDoComment"
-              ref="overlay"
-            />
-          </div>
-        </transition>
-      </div>
+    <div
+      class="feeds-tab-container"
+      style="--1ee3a37c: all 0.4s cubic-bezier(0.2, 0, 0.25, 1) 0s"
+    >
+      <!-- <router-view /> -->
+      <Chat
+        v-if="chatShow"
+        :acceptUid="uid"
+        class="animate__animated animate__zoomIn animate__delay-0.5s"
+        @click-chat="close"
+      ></Chat>
+
+      <!-- <Note :type="type"></Note> -->
     </div>
   </div>
 </template>
-<script setup>
+
+<script lang="ts" setup>
+import { ChatLineRound } from '@element-plus/icons-vue'
+import { ref } from 'vue'
+// import { getUserById } from '@/api/user'
+// import Note from '@/components/Note.vue'
+import { useUserStore } from '@/stores/modules/userStore'
+// import Chat from '@/components/Chat.vue'
+// import { followById, isFollow } from '@/api/follower'
 import { useRoute } from 'vue-router'
-import { onMounted, ref } from 'vue'
-import HomeCard from '@/views/user/homecard.vue'
-import CardDetail from '@/views/user/cardDetail.vue'
-import { Back } from '@element-plus/icons-vue'
-import { doFocus, queryUserIndex, queryUserPost } from '@/utils/api'
-import { controlDetail } from '@/stores/controlDetail'
-import { onClickOutside } from '@vueuse/core'
-import {
-  resizeWaterFall,
-  waterFallInit,
-  waterFallMore
-} from '@/utils/waterFall'
-import { useUserStore } from '@/stores/modules/user'
-import { ElMessage, ElUpload } from 'element-plus'
-
 const route = useRoute()
-const Details = controlDetail()
 const userStore = useUserStore()
+// const currentUid = userStore.getUserInfo().id
+const userInfo = ref<any>({})
+//const uid = history.state.uid;
+const uid = route.query.uid as string
+const type = ref(1)
+const chatShow = ref(false)
+const _isFollow = ref(false)
 
-// 加载用户信息 //////////////////////////////////////////////////////////////
-const userInfo = ref({})
-const uploadRef = ref(null)
-const imgUrl = ref('')
-// const uploadUrl = '/api/upload/avatar' 后端上传接口地址
-
-const getUserInfo = async () => {
-  const id = route.params.id
-  const res = await queryUserIndex({ id })
-  userInfo.value = res.data
-  document.title = res.data.user.username + ' .xhs'
+const toPage = (val: number) => {
+  type.value = val
 }
 
-//////////头像/////////////
-const handleAvatarSuccess = (response, file) => {
-  imgUrl.value = URL.createObjectURL(file.raw)
-  alert(imgUrl.value)
-  // TODO: 更新用户头像信息
-}
-const chooseAvatar = () => {
-  uploadRef.value?.click()
-}
-const beforeAvatarUpload = (file) => {
-  alert('2222')
-  const isJPG = file.type === 'image/jpeg'
-  const isPNG = file.type === 'image/png'
-  const isLt2M = file.size / 1024 / 1024 < 2
-
-  if (!isJPG && !isPNG) {
-    alert('上传头像图片只能是 JPG/PNG 格式!')
-    return false
-  }
-  if (!isLt2M) {
-    alert('上传头像图片大小不能超过 2MB!')
-    return false
-  }
-  return true
-}
-const checkFollow = (id) => {
-  if (userStore.userInfo.id === id) {
-    return true
-  }
-  return userStore.userFocus.includes(id)
-}
-const doFocusOn = async (id) => {
-  if (userStore.userInfo.id === id) {
-    ElMessage({ type: 'warning', message: '不能对自己进行关注操作' })
-    return
-  }
-  const res = await doFocus({ id })
-  userStore.extendUserInfo(1, id)
-  ElMessage({ type: 'success', message: res.info })
-}
-// 加载用户信息结束 ////////////////////////////////////////////////////////////
-
-// 主页切换标签 //////////////////////////////////////////////////////////////
-const radio = ref('帖子')
-const userPost = ref([])
-const userCollect = ref([])
-const userFavorite = ref([])
-const disabled = ref(true) // 初始禁用滚动加载
-
-const columns = ref(0)
-const card_columns_posts = ref({})
-const card_columns_like = ref({})
-const card_columns_collect = ref({})
-const arrHeight = ref([])
-
-const Toggle = async () => {
-  const user_id = route.params.id
-  const offset = 0
-  const types = radio.value
-  if (radio.value === '帖子' && userPost.value.length === 0) {
-    const post = await queryUserPost({ user_id, types, offset })
-    userPost.value = post.info
-    waterFallInit(columns, card_columns_posts, arrHeight, userPost)
-  } else if (radio.value === '收藏' && userCollect.value.length === 0) {
-    const post = await queryUserPost({ user_id, types, offset })
-    userCollect.value = post.info
-    waterFallInit(columns, card_columns_collect, arrHeight, userCollect)
-  } else if (radio.value === '点赞' && userFavorite.value.length === 0) {
-    const post = await queryUserPost({ user_id, types, offset })
-    userFavorite.value = post.info
-    waterFallInit(columns, card_columns_like, arrHeight, userFavorite)
-  }
-  disabled.value = false
-}
-const load = async () => {
-  disabled.value = true
-  const user_id = userInfo.value.user.id
-  const types = radio.value
-  if (types === '帖子') {
-    const offset = userPost.value.length
-    const post = await queryUserPost({ user_id, types, offset })
-    if (post.info.length === 0) {
-      disabled.value = true
-    } else {
-      userPost.value = [...userPost.value, ...post.info]
-      waterFallMore(arrHeight, card_columns_posts, post.info)
-      disabled.value = false
-    }
-  } else if (types === '点赞') {
-    const offset = userFavorite.value.length
-    const like = await queryUserPost({ user_id, types, offset })
-    if (like.info.length === 0) {
-      disabled.value = true
-    } else {
-      userFavorite.value = [...userFavorite.value, ...like.info]
-      waterFallMore(arrHeight, card_columns_like, like.info)
-      disabled.value = false
-    }
-  } else if (types === '收藏') {
-    const offset = userCollect.value.length
-    const collect = await queryUserPost({ user_id, types, offset })
-    if (collect.info.length === 0) {
-      disabled.value = true
-    } else {
-      userCollect.value = [...userCollect.value, ...collect.info]
-      waterFallMore(arrHeight, card_columns_collect, collect.info)
-      disabled.value = false
-    }
-  }
-}
-// 主页切换标签结束 ///////////////////////////////////////////////////////////
-
-// 卡片详情页的内容 //////////////////////////////////////////////////////////
-const detail = Details.detail
-const overlayX = ref(0) // 覆盖层的水平位置
-const overlayY = ref(0) // 覆盖层的垂直位置
-const overlay = ref(null)
-const show = ref(false)
-
-const getDetails = async (id) => Details.getDetail(id)
-const showMessage = async (id, left, top) => {
-  window.history.pushState({}, '', `/explore/${id}`)
-  overlayX.value = left
-  overlayY.value = top
-  await getDetails(id)
-  show.value = true
-}
-const afterDoComment = (comment) => Details.afterDoComment(comment)
 const close = () => {
-  window.history.pushState({}, '', `/user/index/${userInfo.value.user.id}`)
-  document.title = userInfo.value.user.username + ' .Dlock'
-  show.value = false
-}
-onClickOutside(overlay, () => {
-  window.history.pushState({}, '', `/user/index/${userInfo.value.user.id}`)
-  document.title = userInfo.value.user.username + ' .Dlock'
-  show.value = false
-})
-let style = null
-const onBeforeEnter = () => {
-  style = document.createElement('style')
-  style.innerHTML = `@keyframes scale-up-center {
-          0% {
-            transform: scale(0.5);
-            transform-origin: ${overlayX.value}px ${overlayY.value}px;
-          }
-          100% {
-            transform: scale(1);
-          }
-       }`
-  document.head.appendChild(style)
+  chatShow.value = false
 }
 
-const onAfterEnter = (el) => {
-  el.style = 'background-color: #fff'
-  const button = el.querySelector('.backPage')
-  button.style.display = ''
-}
-const onBeforeLeave = (el) => {
-  const button = el.querySelector('.backPage')
-  button.style.display = 'none'
-  el.style = 'background-color: transparent'
+const toChat = () => {
+  chatShow.value = true
 }
 
-const onAfterLeave = () => {
-  if (style) {
-    document.head.removeChild(style)
-    style = null
-  }
-}
-// 卡片详情页的内容结束 //////////////////////////////////////////////////////////
-const resize = () => {
-  if (radio.value === '帖子') {
-    resizeWaterFall(columns, card_columns_posts, arrHeight, userPost)
-  } else if (radio.value === '收藏') {
-    resizeWaterFall(columns, card_columns_collect, arrHeight, userCollect)
-  } else if (radio.value === '点赞') {
-    resizeWaterFall(columns, card_columns_like, arrHeight, userFavorite)
-  }
-}
-onMounted(async () => {
-  await getUserInfo()
-  await Toggle()
-  resize()
-})
+// const follow = (fid: string, type: number) => {
+//   followById(fid).then(() => {
+//     _isFollow.value = type == 0
+//   })
+// }
+
+// const initData = () => {
+//   getUserById(uid).then((res) => {
+//     userInfo.value = res.data
+//   })
+//   isFollow(uid).then((res) => {
+//     _isFollow.value = res.data
+//   })
+// }
+
+// initData()
 </script>
-<style scoped>
-.userInfo {
-  display: flex;
-  width: 100%;
-  height: 250px;
-  align-items: center;
-  justify-content: center;
-}
 
-.focusOn {
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 40px;
-  line-height: 18px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: red;
-  border-radius: 1000px;
-  color: #fff;
-  border-color: transparent;
-  margin-top: 1rem;
-}
+<style lang="less" scoped>
+.user-page {
+  background: #fff;
+  height: 100vh;
 
-.focusOn:hover {
-  background-color: #fd5656;
-}
+  .user {
+    padding-top: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-.tagArea {
-  width: 400px;
-}
+    .user-info {
+      display: flex;
+      justify-content: center;
+      padding: 48px 0;
 
-.tagArea .ml-2 {
-  margin-right: 10px;
-}
+      .avatar {
+        .avatar-wrapper {
+          text-align: center;
+          width: 250.66667px;
+          height: 175.46667px;
 
-.checkBox {
-  margin-top: 50px;
-  position: relative;
-  left: 40%;
-}
+          .user-image {
+            border-radius: 50%;
+            margin: 0 auto;
+            width: 70%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-}
+      .info-part {
+        position: relative;
+        width: 100%;
 
-.backPage {
-  position: fixed;
-  top: 5%;
-  left: 3%;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 40px;
-  border: 1px solid var(--color-border);
-  cursor: pointer;
-  transition: all 0.3s;
-}
+        .info {
+          @media screen and (min-width: 1728px) {
+            width: 533.33333px;
+          }
 
-.fade-enter-active {
-  animation: scale-up-center 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-}
+          margin-left: 32px;
 
-.fade-leave-active {
-  animation: scale-up-center 0.5s linear both reverse;
-}
-.avatarsize {
-  margin-right: 50px;
-}
+          .basic-info {
+            display: flex;
+            align-items: center;
 
-.avatar-uploader {
-  display: block;
-  border-radius: 200px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  width: 200px;
-  height: 200px;
-  margin-right: 40px;
-}
-::v-deep.hide .el-upload--picture-card {
-  display: none;
+            .user-basic {
+              width: 100%;
+
+              .user-nickname {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                max-width: calc(100% - 96px);
+
+                .user-name {
+                  font-weight: 600;
+                  font-size: 24px;
+                  line-height: 120%;
+                  color: #333;
+                }
+              }
+
+              .user-content {
+                width: 100%;
+                font-size: 12px;
+                line-height: 120%;
+                color: rgba(51, 51, 51, 0.6);
+                display: flex;
+                margin-top: 8px;
+
+                .user-redId {
+                  padding-right: 12px;
+                }
+              }
+            }
+          }
+
+          .user-desc {
+            width: 100%;
+            font-size: 14px;
+            line-height: 140%;
+            color: #333;
+            margin-top: 16px;
+            white-space: pre-line;
+          }
+
+          .user-tags {
+            height: 24px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #333;
+            text-align: center;
+            font-weight: 400;
+            line-height: 120%;
+
+            .tag-item :first-child {
+              padding: 3px 6px;
+            }
+
+            .tag-item {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 4px 8px;
+              grid-gap: 4px;
+              gap: 4px;
+              height: 18px;
+              border-radius: 41px;
+              background: rgba(0, 0, 0, 0.03);
+              height: 24px;
+              line-height: 24px;
+              margin-right: 6px;
+              color: rgba(51, 51, 51, 0.6);
+            }
+          }
+
+          .data-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+
+            .user-interactions {
+              width: 100%;
+              display: flex;
+              align-items: center;
+
+              .count {
+                font-weight: 500;
+                font-size: 14px;
+                margin-right: 4px;
+              }
+
+              .shows {
+                color: rgba(51, 51, 51, 0.6);
+                font-size: 14px;
+                line-height: 120%;
+              }
+            }
+
+            .user-interactions > div {
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+              margin-right: 16px;
+            }
+          }
+        }
+
+        .follow {
+          position: absolute;
+          margin-left: auto;
+          display: block;
+          right: 0;
+          top: 0;
+        }
+      }
+
+      .tool-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .reds-sticky {
+    padding: 16px 0;
+    z-index: 5 !important;
+    background: hsla(0, 0%, 100%, 0.98);
+
+    .reds-tabs-list {
+      @media screen and (min-width: 1728px) {
+        width: 1445.33333px;
+      }
+
+      display: flex;
+      flex-wrap: nowrap;
+      position: relative;
+      font-size: 16px;
+      justify-content: center;
+
+      .reds-tab-item {
+        padding: 0px 16px;
+        margin-right: 0px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        height: 40px;
+        cursor: pointer;
+        color: rgba(51, 51, 51, 0.8);
+        white-space: nowrap;
+        transition: transform 0.3s cubic-bezier(0.2, 0, 0.25, 1);
+        z-index: 1;
+      }
+
+      .reds-tab-item.active {
+        background-color: rgba(0, 0, 0, 0.03);
+        border-radius: 20px;
+        font-weight: 600;
+        color: rgba(51, 51, 51, 0.8);
+      }
+    }
+  }
+
+  .feeds-tab-container {
+    padding-left: 2rem;
+  }
 }
 </style>

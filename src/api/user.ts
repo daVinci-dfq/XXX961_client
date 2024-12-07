@@ -1,68 +1,18 @@
 import httpService from '@/service/HttpService'
-import axios from 'axios'
 
-// 登录
-export const login = ({
-  username,
-  password
-}: {
-  username: string
-  password: string
-}) => {
-  return httpService.http({
-    url: '/login/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: {
-      username,
-      password
+export const refreshToken = (refreshToken: string) => {
+  return httpService.http<any>({
+    url: `/auth/auth/refreshToken/`, // mock接口  ///////////////
+    method: 'get',
+    params: {
+      refreshToken
     }
   })
 }
 
-/**
- * 注册
- *
- */
-export const getEmail = {
-  async getEmailCode(data: {
-    email: string
-  }): Promise<{ code: number; message: string }> {
-    try {
-      const response = await httpService
-        .getAxiosInstance()
-        .get('/user/code', { params: data })
-      return response.data
-    } catch (error) {
-      console.error('Error fetching email code:', error)
-      throw error
-    }
-  }
-}
-export const Register = ({
-  email,
-  username,
-  password
-}: {
-  email: string
-  username: string
-  password: string
-}) => {
-  return httpService.http({
-    url: '/register/',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    data: {
-      username,
-      password,
-      email
-    }
-  })
-}
+
+
+
 
 // 访问用户主页
 export const queryUserIndex = ({ id }: { id: string }) => {
@@ -258,3 +208,4 @@ export const loadReplies = ({ id, offset }: { id: number; offset: number }) => {
     }
   })
 }
+

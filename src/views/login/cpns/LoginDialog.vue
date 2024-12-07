@@ -103,7 +103,7 @@
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, onMounted, watch, computed } from 'vue'
 import { isEmail } from '@/utils/validate'
-import { login, Register, getEmail } from '@/utils/api'
+import { login, Register, getEmail } from '@/api/login'
 const isKeepPassword = ref(true)
 const isSignIn = ref(true)
 const props = defineProps({

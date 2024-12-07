@@ -1,5 +1,9 @@
-import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
-import { useUserStore } from '@/stores/modules/user'
+import axios, {
+  type AxiosInstance,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig
+} from 'axios'
+import { useUserStore } from '@/stores/modules/userStore'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
 
@@ -9,19 +13,23 @@ class HttpService {
   constructor() {
     this.http = axios.create({
       baseURL: 'http://localhost:6539',
-      timeout: 5000
+      timeout: 5000,
+      headers: { 'Content-Type': 'application/json;charset=utf-8' }
     })
 
     // axios请求拦截器
     this.http.interceptors.request.use(
-      (config) => {
+      (config: InternalAxiosRequestConfig) => {
         const userStore = useUserStore()
-        if (userStore.userInfo.token) {
-          config.headers.Authorization = `Bearer ${userStore.userInfo.token}`
+        if (userStore.getToken()) {
+          config.headers.accessToken = userStore.getToken()
+          config.headers.userId = userStore.getUserInfo().id
         }
         return config
       },
-      (error) => Promise.reject(error)
+      (error: any) => {
+        return Promise.reject(error)
+      }
     )
 
     // axios响应拦截器
