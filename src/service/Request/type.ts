@@ -4,6 +4,11 @@ import type {
   InternalAxiosRequestConfig // 新版本的request的最新类型为InternalAxiosRequestConfig
 } from 'axios'
 
+/**
+ * @author daVinci
+ * @description 定义类型。
+ */
+
 // 定义请求拦截器类型，T为响应数据类型
 export interface RequestInterceptors<T = any> {
   requestInterceptor?: (

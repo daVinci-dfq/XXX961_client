@@ -79,6 +79,5 @@ export class WebSocketService {
         callback(JSON.parse(frame.body))
       })
     }
-    console.log('Subscribed!')
   }
 }

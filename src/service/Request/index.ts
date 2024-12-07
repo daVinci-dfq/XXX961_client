@@ -3,6 +3,10 @@ import type { RequestConfig, RequestInterceptors } from './type'
 import { ElLoading } from 'element-plus'
 import { DEFAULT_LOADING } from './config'
 
+/**
+ * @author: daVinci
+ * @description: 封装axios请求类。
+ */
 export default class Request<T = any> {
   // 请求实例
   instance: AxiosInstance
