@@ -70,7 +70,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, inject } from 'vue'
 import { Search } from '@element-plus/icons-vue'
-import Classifications from './Classifications.vue'
+import Classifications from '@/views/main/classifications/Classifications.vue'
 import LoginDialog from '@/views/login/cpns/LoginDialog.vue'
 import FsVirtualWaterfall from '../waterfall-layout/FsVirtualWaterfall.vue'
 import type { ICardItem } from '../waterfall-layout/type'

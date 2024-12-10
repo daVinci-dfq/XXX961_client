@@ -1,14 +1,15 @@
 <template>
   <div class="container" id="container">
-    <div v-if="isLogin" class="push-container" id="tagContainer">
+    <!-- v-if="isLogin" -->
+    <div class="push-container" id="tagContainer">
       <div class="header">
         <span class="header-icon"></span
-        ><span class="header-title">发布图文</span>
+        ><span class="header-title">分享你的美好生活</span>
       </div>
       <div class="img-list">
         <el-upload
           v-model:file-list="fileList"
-          action="http://localhost:88/api/util/oss/saveBatch/0"
+          action="http://localhost:6539/api/video/upload"
           list-type="picture-card"
           multiple
           :limit="9"
@@ -42,21 +43,6 @@
           data-tribute="true"
           placeholder="填写更全面的描述信息，让更多的人看到你吧！"
         ></p>
-
-        <div
-          v-infinite-scroll="loadMoreData"
-          class="scroll-tag-container"
-          v-show="showTagState"
-        >
-          <p
-            v-for="(item, index) in selectTagList"
-            :key="index"
-            class="scrollbar-tag-item"
-            @click="selectTag(item)"
-          >
-            {{ item.title }}
-          </p>
-        </div>
       </div>
 
       <div class="categorys">
@@ -64,21 +50,8 @@
           v-model="categoryList"
           :options="options"
           @change="handleChange"
-          :props="props"
           placeholder="请选择分类"
         />
-      </div>
-      <div class="btns">
-        <button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content" @click="addTag"># 话题</span></button
-        ><button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content"><span>@</span> 用户</span></button
-        ><button class="css-fm44j css-osq2ks dyn">
-          <span class="btn-content">
-            <div class="smile"></div>
-            表情
-          </span>
-        </button>
       </div>
 
       <div class="submit">
@@ -88,14 +61,14 @@
         <button class="publishBtn" @click="pubslish()" v-else>
           <span class="btn-content">发布</span>
         </button>
-        <button class="clearBtn">
+        <button class="clearBtn" @click="resetData">
           <span class="btn-content">取消</span>
         </button>
       </div>
     </div>
-    <div v-else>
+    <!-- <div v-else>
       <el-empty description="用户未登录" />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -110,12 +83,9 @@ import { getCategoryTreeData } from '@/api/category'
 import { saveNoteByDTO, getNoteById, updateNoteByDTO } from '@/api/note'
 import { getPageTagByKeyword } from '@/api/tag'
 import { getFileFromUrl, getHtmlContent } from '@/utils/util'
+import type { RefSymbol } from '@vue/reactivity'
 // import Schema from "async-validator";
 // import Crop from "@/components/Crop.vue";
-const props: CascaderProps = {
-  label: 'title',
-  value: 'id'
-}
 
 // const rules = {
 //   title: { required: true, message: "标题不能为空" },
@@ -135,13 +105,16 @@ const uploadHeader = ref({
   accessToken: userStore.getToken()
 })
 const categoryList = ref<Array<any>>([])
-const options = ref([])
+interface Option {
+  value: string
+  label: string
+}
+
+const options = ref<Option[]>([])
 const note = ref<any>({})
 const showTagState = ref(false)
-const selectTagList = ref<Array<any>>([])
 const currentPage = ref(1)
 const pageSize = 10
-const tagTotal = ref(0)
 const pushLoading = ref(false)
 const isLogin = ref(false)
 const postContent = ref(null)
@@ -166,39 +139,12 @@ onMounted(() => {
   document.getElementById('post-textarea')!.addEventListener('input', () => {})
 })
 
-const addTag = () => {
-  showTagState.value = true
-  selectTagList.value = []
-  currentPage.value = 1
-  setData()
-}
-
-const setData = () => {
-  getPageTagByKeyword(currentPage.value, pageSize, '').then((res) => {
-    const { records, total } = res.data
-    selectTagList.value.push(...records)
-    tagTotal.value = total
-  })
-}
-
-const selectTag = (val: any) => {
-  // content.value += val.title;
-  const contentDom = document.getElementById('post-textarea')
-  contentDom!.innerHTML += `<a href='#' style='text-decoration:none'>#${val.title}</a>`
-  console.log(contentDom!.innerHTML)
-  showTagState.value = false
-}
-
-const loadMoreData = () => {
-  currentPage.value += 1
-  setData()
-}
-
 const handleChange = (ids: Array<any>) => {
   categoryList.value = ids
 }
 
 const getNoteByIdMethod = (noteId: string) => {
+  console.log(noteId)
   getNoteById(noteId).then((res) => {
     console.log('---edit', res.data)
     const { data } = res
@@ -230,7 +176,7 @@ const pubslish = () => {
     note.value.title === null ||
     categoryList.value.length <= 0
   ) {
-    ElMessage.error('请选择图片，标签，分类～')
+    alert('请先选择图片，标签，分类～')
     return
   }
   pushLoading.value = true
@@ -241,7 +187,6 @@ const pubslish = () => {
     params.append('uploadFiles', file.raw)
     console.log(file.raw)
   })
-
   note.value.count = fileList.value.length
   note.value.type = 1
   note.value.content = document
@@ -249,15 +194,7 @@ const pubslish = () => {
     .innerHTML.replace(/<[^>]*>[^<]*(<[^>]*>)?/gi, '')
   note.value.cpid = categoryList.value[0]
   note.value.cid = categoryList.value[1]
-  note.value.tagList = []
-  const _content = getHtmlContent(
-    document.getElementById('post-textarea')!.innerHTML
-  )
-  console.log(_content)
-  _content.forEach((item: string) => {
-    note.value.tagList.push(item.replace('#', ''))
-  })
-
+  //设置封面图片
   const coverImage = new Image()
   coverImage.src = fileList.value[0].url!
   coverImage.onload = () => {
@@ -265,7 +202,6 @@ const pubslish = () => {
     note.value.noteCoverHeight = size >= 1.3 ? 200 : 300
     const noteData = JSON.stringify(note.value)
     params.append('noteData', noteData)
-
     if (note.value.id !== null && note.value.id !== undefined) {
       updateNote(params)
     } else {
@@ -305,25 +241,22 @@ const saveNote = (params: FormData) => {
 const resetData = () => {
   note.value = {}
   document.getElementById('post-textarea')!.innerHTML = ''
-  categoryList.value = []
   fileList.value = []
   pushLoading.value = false
+  categoryList.value = []
 }
 
 const initData = () => {
   isLogin.value = userStore.isLogin()
-  if (isLogin.value) {
-    const noteId = route.query.noteId as string
-    console.log('---noteId', noteId)
-    if (noteId !== '' && noteId !== undefined) {
-      getNoteByIdMethod(noteId)
-    }
-    getCategoryTreeData().then((res) => {
-      options.value = res.data
-    })
+  // if (isLogin.value) {
+  const noteId = route.query.noteId as string
+  console.log('---noteId', noteId)
+  if (noteId !== '' && noteId !== undefined) {
+    getNoteByIdMethod(noteId)
   }
+  options.value = getCategoryTreeData()
+  // }
 }
-
 initData()
 </script>
 
@@ -348,11 +281,12 @@ a {
 
 .container {
   flex: 1;
-  padding-top: 72px;
+  padding-top: 10px;
 
   .push-container {
-    margin-left: 12vw;
-    width: 600px;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100%;
     border-radius: 8px;
     box-sizing: border-box;
     box-shadow: var(--el-box-shadow-lighter);
@@ -413,6 +347,7 @@ a {
 
       .input-title {
         margin-bottom: 5px;
+        width: 99%;
         font-size: 12px;
       }
 
@@ -429,7 +364,7 @@ a {
       .post-content {
         cursor: text;
         margin-top: 10px;
-        width: 100%;
+        width: 97%;
         min-height: 90px;
         max-height: 300px;
         margin-bottom: 10px;

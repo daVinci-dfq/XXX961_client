@@ -22,7 +22,7 @@ export const getNoteById = (noteId: string) => {
  */
 export const saveNoteByDTO = (data: any) => {
   return httpService.http<any>({
-    url: '/platform/note/saveNoteByDTO', // mock接口
+    url: '/api/videos/upload', // mock接口
     method: 'post',
     data: data,
     headers: {
