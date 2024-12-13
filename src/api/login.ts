@@ -8,7 +8,7 @@ export const login = ({
   password: string
 }) => {
   return httpService.http({
-    url: '/login/',
+    url: '/api/login/',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -49,7 +49,7 @@ export const Register = ({
   password: string
 }) => {
   return httpService.http({
-    url: '/register/',
+    url: '/api/user/register/',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

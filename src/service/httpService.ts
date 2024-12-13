@@ -12,7 +12,7 @@ class HttpService {
 
   constructor() {
     this.http = axios.create({
-      baseURL: 'http://localhost:6539',
+      baseURL: 'http://localhost:9610',
       timeout: 5000,
       headers: { 'Content-Type': 'application/json;charset=utf-8' }
     })

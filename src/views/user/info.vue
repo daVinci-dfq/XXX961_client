@@ -4,11 +4,24 @@
       <div class="user-info">
         <div class="avatar">
           <div class="avatar-wrapper">
-            <img
-              :src="userInfo.avatar"
-              class="user-image"
-              style="border: 1px solid rgba(0, 0, 0, 0.08)"
-            />
+            <el-upload
+              ref="uploadRef"
+              class="avatar-uploader"
+              action="http://localhost:6539/user/uploadAvatar"
+              :show-file-list="false"
+              :on-success="handleSuccess"
+              :before-upload="beforeUpload"
+            >
+              <img v-if="imgUrl" :src="imgUrl" class="avatar" />
+              <img v-else src="/public/avatar.jpg" width="278" class="avatar" />
+            </el-upload>
+            <el-button
+              icon="el-icon-plus"
+              size="small"
+              class="uploadButton"
+              @click="submitUpload"
+              >上传头像</el-button
+            >
           </div>
         </div>
         <div class="info-part">
@@ -17,13 +30,13 @@
               <div class="user-basic">
                 <div class="user-nickname">
                   <div class="user-name">
-                    {{ userInfo.username
-                    }}<!---->
+                    {{ userInfo.username }}
                   </div>
                 </div>
                 <div class="user-content">
                   <span class="user-redId">小红书号：{{ userInfo.yxId }}</span
-                  ><span class="user-IP"> IP属地：广东</span>
+                  ><span class="seperate">|</span
+                  ><span class="user-IP"> IP属地：山东</span>
                 </div>
               </div>
             </div>
@@ -38,7 +51,7 @@
                 <div>射手座</div>
               </div>
               <div class="tag-item">
-                <div>广东广州</div>
+                <div>山东济南</div>
               </div>
               <div class="tag-item">
                 <div>程序员</div>
@@ -125,13 +138,17 @@
 
 <script lang="ts" setup>
 import { ChatLineRound } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import axios from 'axios'
 // import { getUserById } from '@/api/user'
 // import Note from '@/components/Note.vue'
 import { useUserStore } from '@/stores/modules/userStore'
 // import Chat from '@/components/Chat.vue'
 // import { followById, isFollow } from '@/api/follower'
 import { useRoute } from 'vue-router'
+const uploadRef = ref(null)
+const imgUrl = ref('')
 const route = useRoute()
 const userStore = useUserStore()
 // const currentUid = userStore.getUserInfo().id
@@ -142,6 +159,20 @@ const type = ref(1)
 const chatShow = ref(false)
 const _isFollow = ref(false)
 
+onMounted(() => {
+  fetchUserAvatar()
+})
+const fetchUserAvatar = () => {
+  // 假设有一个后端接口返回用户头像URL
+  axios
+    .get('/api/user/avatar')  //后端接口
+    .then((response) => {
+      imgUrl.value = response.data.avatarUrl
+    })
+    .catch((error) => {
+      console.error('获取用户头像失败', error)
+    })
+}
 const toPage = (val: number) => {
   type.value = val
 }
@@ -153,6 +184,45 @@ const close = () => {
 const toChat = () => {
   chatShow.value = true
 }
+const handleSuccess = (file) => {
+  imgUrl.value = URL.createObjectURL(file.raw)
+}
+const beforeUpload = (file) => {
+  const isJPG = file.type === 'image/jpeg'
+  const isPNG = file.type === 'image/png'
+  const isLt2M = file.size / 1024 / 1024 < 2
+
+  if (!isJPG && !isPNG) {
+    ElMessage.error('上传头像图片只能是 JPG/PNG 格式!')
+    return false
+  }
+  if (!isLt2M) {
+    ElMessage.error('上传头像图片大小不能超过 2MB!')
+    return false
+  }
+  return true
+}
+// const submitUpload = () => {
+//   uploadRef.value.submit()
+// }
+
+// //上传头像
+// const submitUpload = async () => {
+//   const formData = new FormData()
+//   formData.append('file', uploadRef.value.uploadFiles[0].raw)
+
+//   try {
+//     const response = await axios.post(`/api/users/${userId}/avatar`, formData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data'
+//       }
+//     })
+//     ElMessage.success('头像上传成功！')
+//     imgUrl.value = `/uploads/${response.data.avatar}`
+//   } catch (error) {
+//     ElMessage.error('头像上传失败！')
+//   }
+// }
 
 // const follow = (fid: string, type: number) => {
 //   followById(fid).then(() => {
@@ -193,6 +263,7 @@ const toChat = () => {
           text-align: center;
           width: 250.66667px;
           height: 175.46667px;
+          margin-top: -70px;
 
           .user-image {
             border-radius: 50%;
@@ -202,6 +273,11 @@ const toChat = () => {
             object-fit: cover;
           }
         }
+      }
+      .uploadButton {
+        width: 70px;
+        height: 30px;
+        margin-top: 5px;
       }
 
       .info-part {
@@ -249,6 +325,12 @@ const toChat = () => {
                 }
               }
             }
+          }
+
+          .seperate {
+            margin-right: 5px;
+            margin-left: 5px;
+            color: #d9d9d5;
           }
 
           .user-desc {

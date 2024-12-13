@@ -57,29 +57,34 @@
         </div>
         <div v-if="isSignIn" class="signin">
           <h1>sign in</h1>
-          <form
+          <el-form
             :model="loginForm"
             class="more-padding"
-            ref="loginFromRef"
+            ref="loginFormRef"
             autocomplete="off"
-            :rule="loginRules"
+            :rules="loginRules"
           >
+          <el-form-item prop="username">
             <input
               type="text"
               placeholder="username"
               v-model="loginForm.username"
             />
+          </el-form-item>
+            <el-form-item prop="password">
             <input
               type="password"
               placeholder="password"
               v-model="loginForm.password"
+              
             />
+          </el-form-item>
             <div class="checkbox">
               <input type="checkbox" id="remember" v-model="rememberMe" />
               <label for="remember">remember me</label>
             </div>
             <button class="button submit" @click="submitFrom">login</button>
-          </form>
+          </el-form>
         </div>
       </div>
       <div class="leftbox">
@@ -170,6 +175,7 @@ const countDown = () => {
 }
 const form = ref(null as any)
 const register = async () => {
+  console.log('1')
   const res = await isEmail(registerForm.value.email)
   if (!res) return
   try {
@@ -188,7 +194,7 @@ const loginForm = ref({
   username: '',
   password: ''
 })
-const loginFromRef = ref(null as any)
+const loginFormRef = ref(null as any)
 
 function toggleSignIn() {
   isSignIn.value = true
@@ -197,8 +203,17 @@ function toggleSignIn() {
 function toggleSignUp() {
   isSignIn.value = false
 }
-const submitFrom = async () => {
+const submitFrom = async (event: Event) => {
   try {
+    console.log(loginFormRef.value)
+    const valid = await loginFormRef.value.validate()
+    event.preventDefault()
+    console.log(loginForm.value)
+    if (!valid) {
+      // 如果验证失败，返回并输出错误信息
+      console.log('表单验证失败')
+      return
+    }
     loading.value = true
     const res = await login(loginForm.value)
     console.log('🚀 ~ submitForm ~ res:', res)
