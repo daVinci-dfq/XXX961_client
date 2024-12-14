@@ -4,19 +4,49 @@
       <el-header>
         <top-bar class="header">
           <template #center>
-            <div class="vertical-flex">
-              <div class="search-icon">
-                <el-input
-                  v-model="search_input"
-                  class="input"
-                  placeholder="Type here to search!"
-                  :prefix-icon="Search"
-                  clearable
-                />
-                <el-button style="height: 40px; margin-top: 16px"
-                  >search</el-button
-                >
+            <div class="input-box" id="sujContainer">
+              <input
+                type="text"
+                v-model="keyword"
+                class="search-input"
+                placeholder="探索世界"
+                @input="changeInput"
+                @focus="focusInput"
+                @keyup.enter="searchPage"
+                ref="SearchInput"
+              />
+              <div class="input-button">
+                <div class="close-icon" v-show="showClose" @click="clearInput">
+                  <Close
+                    style="
+                      width: 1.2em;
+                      height: 1.2em;
+                      margin-right: 20px;
+                      margin-top: 5px;
+                    "
+                  />
+                </div>
+                <div class="search-icon" @click="searchPage">
+                  <a href="#">
+                    <Search
+                      style="
+                        width: 1.2em;
+                        height: 1.2em;
+                        margin-right: 20px;
+                        margin-top: 5px;
+                      "
+                    />
+                  </a>
+                </div>
               </div>
+              <searchContainer
+                v-show="showSearch"
+                :recordList="recordList"
+              ></searchContainer>
+              <SujContainer
+                v-show="showHistory"
+                :closeHistoryRecord="showHistory"
+              ></SujContainer>
             </div>
           </template>
           <template #right>
@@ -75,8 +105,50 @@ import LoginDialog from '@/views/login/cpns/LoginDialog.vue'
 import FsVirtualWaterfall from '../waterfall-layout/FsVirtualWaterfall.vue'
 import type { ICardItem } from '../waterfall-layout/type'
 import list from '../waterfall-layout/config/index'
-
+import searchContianer from './searchContianer.vue'
+import { getRandomString } from '@/utils/util'
+import { SearchStore } from '@/stores/searchStore'
+const keyword = ref('')
+const searchStore = SearchStore()
 const search_input = ref('')
+const showHistory = ref(false)
+const showSearch = ref(false)
+const showClose = ref(false)
+const SearchInput = ref()
+const recordList = ref<Array<string>>([])
+const clearInput = () => {
+  keyword.value = ''
+  showClose.value = false
+  showHistory.value = true
+  showSearch.value = false
+  SearchInput.value.focus()
+}
+const focusInput = () => {
+  showSearch.value = keyword.value.length == 0 ? false : true
+  showHistory.value = keyword.value.length > 0 ? false : true
+}
+const changeInput = (e: any) => {
+  const { value } = e.target
+  keyword.value = value
+  showClose.value = keyword.value == '' ? false : true
+  showSearch.value = keyword.value.length == 0 ? false : true
+  showHistory.value = keyword.value.length > 0 ? false : true
+  if (keyword.value.length > 0) {
+    getRecordByKeyWord(keyword.value).then((res) => {
+      recordList.value = res.data
+    })
+  }
+}
+const searchPage = () => {
+  // 1.storage中添加搜索记录
+  searchStore.setKeyword(keyword.value)
+  if (keyword.value.length > 0) {
+    searchStore.pushRecord(keyword.value)
+    searchStore.setSeed(getRandomString(12))
+  }
+  showSearch.value = false
+}
+
 const afterLogin = ref(false)
 const loginDialogVisible = ref(false)
 const avatarSrc = ref('public/image1.jpg') // 头像路径
@@ -229,5 +301,64 @@ p {
   height: 10px;
   border-radius: 50%; /* 使头像呈圆形 */
   object-fit: cover; /* 确保图片覆盖整个容器 */
+}
+.input-box {
+  height: 40px;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
+
+  @media screen and (max-width: 695px) {
+    display: none;
+  }
+
+  @media screen and (min-width: 960px) and (max-width: 1191px) {
+    width: calc(-36px + 50vw);
+  }
+
+  @media screen and (min-width: 1192px) and (max-width: 1423px) {
+    width: calc(-33.6px + 40vw);
+  }
+
+  @media screen and (min-width: 1424px) and (max-width: 1727px) {
+    width: calc(-42.66667px + 33.33333vw);
+  }
+
+  @media screen and (min-width: 1728px) {
+    width: 533.33333px;
+  }
+
+  .search-input {
+    padding: 0 84px 0 16px;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    line-height: 120%;
+    color: #333;
+    caret-color: #ff2442;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 999px;
+  }
+
+  .input-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(51, 51, 51, 0.8);
+
+    .close-icon .search-icon {
+      width: 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgba(51, 51, 51, 0.8);
+    }
+  }
 }
 </style>
